@@ -28,11 +28,12 @@ namespace ILRuntime.Runtime.Enviorment
         Queue<ILIntepreter> freeIntepreters = new Queue<ILIntepreter>();
         Dictionary<int, ILIntepreter> intepreters = new Dictionary<int, ILIntepreter>();
         Dictionary<Type, CrossBindingAdaptor> crossAdaptors = new Dictionary<Type, CrossBindingAdaptor>(new ByReferenceKeyComparer<Type>());
-        Dictionary<string, IType> mapType = new Dictionary<string, IType>();
+        Dictionary<Type, ValueTypeBinder> valueTypeBinders = new Dictionary<Type, ValueTypeBinder>();
+        ThreadSafeDictionary<string, IType> mapType = new ThreadSafeDictionary<string, IType>();
         Dictionary<Type, IType> clrTypeMapping = new Dictionary<Type, IType>(new ByReferenceKeyComparer<Type>());
-        Dictionary<int, IType> mapTypeToken = new Dictionary<int, IType>();
-        Dictionary<int, IMethod> mapMethod = new Dictionary<int, IMethod>();
-        Dictionary<long, string> mapString = new Dictionary<long, string>();
+        ThreadSafeDictionary<int, IType> mapTypeToken = new ThreadSafeDictionary<int, IType>();
+        ThreadSafeDictionary<int, IMethod> mapMethod = new ThreadSafeDictionary<int, IMethod>();
+        ThreadSafeDictionary<long, string> mapString = new ThreadSafeDictionary<long, string>();
         Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate> redirectMap = new Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate>();
         Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate> fieldGetterMap = new Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate>();
         Dictionary<System.Reflection.FieldInfo, CLRFieldSetterDelegate> fieldSetterMap = new Dictionary<System.Reflection.FieldInfo, CLRFieldSetterDelegate>();
@@ -130,7 +131,10 @@ namespace ILRuntime.Runtime.Enviorment
         public IType DoubleType { get { return doubleType; } }
         public IType ObjectType { get { return objectType; } }
 
-        public Dictionary<string, IType> LoadedTypes { get { return mapType; } }
+        /// <summary>
+        /// Attention, this property isn't thread safe
+        /// </summary>
+        public Dictionary<string, IType> LoadedTypes { get { return mapType.InnerDictionary; } }
         internal Dictionary<MethodBase, CLRRedirectionDelegate> RedirectMap { get { return redirectMap; } }
         internal Dictionary<FieldInfo, CLRFieldGetterDelegate> FieldGetterMap { get { return fieldGetterMap; } }
         internal Dictionary<FieldInfo, CLRFieldSetterDelegate> FieldSetterMap { get { return fieldSetterMap; } }
@@ -138,6 +142,7 @@ namespace ILRuntime.Runtime.Enviorment
         internal Dictionary<Type, CLRCreateDefaultInstanceDelegate> CreateDefaultInstanceMap { get { return createDefaultInstanceMap; } }
         internal Dictionary<Type, CLRCreateArrayInstanceDelegate> CreateArrayInstanceMap { get { return createArrayInstanceMap; } }
         internal Dictionary<Type, CrossBindingAdaptor> CrossBindingAdaptors { get { return crossAdaptors; } }
+        internal Dictionary<Type, ValueTypeBinder> ValueTypeBinders { get { return valueTypeBinders; } }
         public DebugService DebugService { get { return debugService; } }
         internal Dictionary<int, ILIntepreter> Intepreters { get { return intepreters; } }
         internal Queue<ILIntepreter> FreeIntepreters { get { return freeIntepreters; } }
@@ -434,6 +439,15 @@ namespace ILRuntime.Runtime.Enviorment
                 createArrayInstanceMap[t] = createArray;
         }
 
+        public void RegisterValueTypeBinder(Type t, ValueTypeBinder binder)
+        {
+            if (!valueTypeBinders.ContainsKey(t))
+            {
+                valueTypeBinders[t] = binder;
+                binder.RegisterCLRRedirection(this);
+            }
+        }
+
         /// <summary>
         /// 更近类型名称返回类型
         /// </summary>
@@ -510,6 +524,7 @@ namespace ILRuntime.Runtime.Enviorment
                     mapTypeToken[bt.GetHashCode()] = bt;
                     if (!isByRef)
                     {
+                        mapType[fullname] = bt;
                         return bt;
                     }
                 }
@@ -523,7 +538,10 @@ namespace ILRuntime.Runtime.Enviorment
                     return res;
                 }
                 else
+                {
+                    mapType[fullname] = bt;
                     return bt;
+                }
             }
             else
             {
@@ -1084,7 +1102,7 @@ namespace ILRuntime.Runtime.Enviorment
                 method = type.GetConstructor(paramList);
             else
             {
-                method = type.GetMethod(methodname, paramList, genericArguments, returnType);
+                method = type.GetMethod(methodname, paramList, genericArguments, returnType, true);
             }
 
             if (method == null)
@@ -1186,6 +1204,7 @@ namespace ILRuntime.Runtime.Enviorment
         public void RegisterCrossBindingAdaptor(CrossBindingAdaptor adaptor)
         {
             var bType = adaptor.BaseCLRType;
+            
             if (bType != null)
             {
                 if (!crossAdaptors.ContainsKey(bType))

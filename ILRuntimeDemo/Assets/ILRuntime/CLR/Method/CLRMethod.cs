@@ -135,19 +135,6 @@ namespace ILRuntime.CLR.Method
             }
         }
 
-        public void RetryCLRRedirection()
-        {
-            if (def != null)
-            {
-                if (def.IsGenericMethod && !def.IsGenericMethodDefinition)
-                {
-                    appdomain.RedirectMap.TryGetValue(def.GetGenericMethodDefinition(), out redirect);
-                }
-                else
-                    appdomain.RedirectMap.TryGetValue(def, out redirect);
-            }
-        }
-
         public int ParameterCount
         {
             get
