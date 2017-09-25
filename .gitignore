@@ -1,0 +1,6 @@
+*.suo
+bin/
+obj/
+*.user
+Library/
+Temp/
