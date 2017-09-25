@@ -39,5 +39,41 @@ namespace HotFix_Project
 
             Debug.LogFormat("Value: a={0},dot={1}, time = {2}ms", a, dot, sw.ElapsedMilliseconds);
         }
+
+        public static void RunTest2()
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            //Debug.Log("测试Vector3的各种运算");
+            Quaternion a = new Quaternion(1, 2, 3, 4);
+            Quaternion b = Quaternion.identity;
+            Vector3 c = new Vector3(2, 3, 4);
+
+            Debug.Log("a * b = " + (a * b));
+            Debug.Log("a * c = " + (a * c));
+            Debug.Log("a == b = " + (a == b));
+            Debug.Log("a != b = " + (a != b));
+            Debug.Log("a dot b = " + Quaternion.Dot(a, b));
+            Debug.Log("a angle b = " + Quaternion.Angle(a, b));
+            Debug.Log("a.eulerAngles = " + a.eulerAngles);
+            Debug.Log("Quaternion.Euler(c) = " + Quaternion.Euler(c));
+            Debug.Log("Quaternion.Euler(2,3,4) = " + Quaternion.Euler(2, 3, 4));
+
+            sw.Start();
+            var rot = Quaternion.Euler(c);
+            float dot = 0;
+            for (int i = 0; i < 100000; i++)
+            {
+                a *= rot;
+                dot += Quaternion.Dot(a, b);
+            }
+            sw.Stop();
+
+            Debug.LogFormat("Value: a={0},dot={1}, time = {2}ms", a, dot, sw.ElapsedMilliseconds);
+        }
+
+        public static void RunTest3()
+        {
+
+        }
     }
 }
