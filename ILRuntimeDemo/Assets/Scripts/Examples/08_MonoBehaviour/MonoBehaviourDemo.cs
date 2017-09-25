@@ -77,62 +77,24 @@ public class MonoBehaviourDemo : MonoBehaviour
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
     }
 
-    //这个仅为演示demo用，平时不要这么调用
-    void RetryCLRRedirection()
-    {
-        var type = appdomain.GetType(typeof(GameObject));
-        var mt = appdomain.LoadedTypes["HotFix_Project.SomeMonoBehaviour"];
-        CLRMethod method = type.GetMethod("AddComponent", new List<IType>(), new IType[] { mt }, mt) as CLRMethod;
-        method.RetryCLRRedirection();        
-    }
-
-    //这个仅为演示demo用，平时不要这么调用
-    void RetryCLRRedirection2()
-    {
-        var type = appdomain.GetType(typeof(GameObject));
-        var mt = appdomain.LoadedTypes["HotFix_Project.SomeMonoBehaviour2"];
-        CLRMethod method = type.GetMethod("GetComponent", new List<IType>(), new IType[] { mt }, mt) as CLRMethod;
-        method.RetryCLRRedirection();
-    }
-
-
     unsafe void OnHotFixLoaded()
     {
         Debug.Log("在热更DLL里面使用MonoBehaviour是可以做到的，但是并不推荐这么做");
         Debug.Log("因为即便能做到使用，要完全支持MonoBehaviour的所有特性，会需要很多额外的工作量");
         Debug.Log("而且通过MonoBehaviour做游戏逻辑当项目规模大到一定程度之后会是个噩梦，因此应该尽量避免");
 
-        Debug.Log("下面我们来通过热更DLL往这个GameObject上挂一个热更里面的MonoBehaviour");
-        try
-        {
-            appdomain.Invoke("HotFix_Project.TestMonoBehaviour", "RunTest", null, gameObject);
-        }
-        catch(System.Exception ex)
-        {
-            Debug.LogError(ex.ToString());
-        }
-        Debug.Log("很不幸，报错了，因为GameObject.AddComponent<T>这个方法是Unity实现的，他并不可能取到热更DLL内部的类型");
+        Debug.Log("直接调用GameObject.AddComponent<T>会报错，这是因为这个方法是Unity实现的，他并不可能取到热更DLL内部的类型");
         Debug.Log("因此我们需要挟持AddComponent方法，然后自己实现");
         Debug.Log("我们先销毁掉之前创建的不合法的MonoBehaviour");
-        Object.Destroy(GetComponent<MonoBehaviourAdapter.Adaptor>());
         SetupCLRRedirection();
         appdomain.Invoke("HotFix_Project.TestMonoBehaviour", "RunTest", null, gameObject);
 
         Debug.Log("可以看到已经成功了");
         Debug.Log("下面做另外一个实验");
-        try
-        {
-            appdomain.Invoke("HotFix_Project.TestMonoBehaviour", "RunTest2", null, gameObject);
-        }
-        catch(System.Exception ex)
-        {
-            Debug.LogError(ex.ToString());
-        }
-        Debug.Log("我们发现GetComponent出错了，这个跟AddComponent类似，需要我们自己处理");
+        Debug.Log("GetComponent跟AddComponent类似，需要我们自己处理");
         SetupCLRRedirection2();
-        Debug.Log("再试一次");
         appdomain.Invoke("HotFix_Project.TestMonoBehaviour", "RunTest2", null, gameObject);
-        Debug.Log("再试一次， 成功了");
+        Debug.Log("成功了");
         Debug.Log("那我们怎么从Unity主工程获取热更DLL的MonoBehaviour呢？");
         Debug.Log("这需要我们自己实现一个GetComponent方法");
         var type = appdomain.LoadedTypes["HotFix_Project.SomeMonoBehaviour2"] as ILType;
@@ -161,8 +123,6 @@ public class MonoBehaviourDemo : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, AddComponent);
             }
         }
-        //这个仅为演示demo用，平时不要这么调用
-        RetryCLRRedirection();
     }
 
     unsafe void SetupCLRRedirection2()
@@ -176,8 +136,6 @@ public class MonoBehaviourDemo : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, GetComponent);
             }
         }
-        //这个仅为演示demo用，平时不要这么调用
-        RetryCLRRedirection2();
     }
 
     MonoBehaviourAdapter.Adaptor GetComponent(ILType type)
