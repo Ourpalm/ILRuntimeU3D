@@ -336,18 +336,33 @@ public unsafe class Vector2Binder : ValueTypeBinder<Vector2>
         return ret + 1;
     }        
 
-    static StackObject* NewVector2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* NewVector2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
     {
-        var ret = ILIntepreter.Minus(esp, 3);
-        var instance = ILIntepreter.GetObjectAndResolveReference(ret);
-        var dst = *(StackObject**)&instance->Value;
-        var f = ILIntepreter.Minus(dst, 1);
-        var v = ILIntepreter.Minus(esp, 2);
-        *f = *v;
+        StackObject* ret;
+        if (isNewObj)
+        {
+            ret = ILIntepreter.Minus(esp, 1);
+            Vector2 vec;
+            var ptr = ILIntepreter.Minus(esp, 1);
+            vec.y = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 2);
+            vec.x = *(float*)&ptr->Value;
 
-        f = ILIntepreter.Minus(dst, 2);
-        v = ILIntepreter.Minus(esp, 1);
-        *f = *v;
+            PushVector2(ref vec, intp, ptr, mStack);
+        }
+        else
+        {
+            ret = ILIntepreter.Minus(esp, 3);
+            var instance = ILIntepreter.GetObjectAndResolveReference(ret);
+            var dst = *(StackObject**)&instance->Value;
+            var f = ILIntepreter.Minus(dst, 1);
+            var v = ILIntepreter.Minus(esp, 2);
+            *f = *v;
+
+            f = ILIntepreter.Minus(dst, 2);
+            v = ILIntepreter.Minus(esp, 1);
+            *f = *v;
+        }
         return ret;
     }
 

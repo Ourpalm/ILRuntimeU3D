@@ -244,27 +244,45 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         return ret + 1;
     }
 
-    static StackObject* NewQuaternion(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* NewQuaternion(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
     {
-        var ret = ILIntepreter.Minus(esp, 5);
-        var instance = ILIntepreter.GetObjectAndResolveReference(ret);
-        var dst = *(StackObject**)&instance->Value;
-        var f = ILIntepreter.Minus(dst, 2);
-        var v = ILIntepreter.Minus(esp, 4);
-        *f = *v;
+        StackObject* ret;
+        if (isNewObj)
+        {
+            ret = ILIntepreter.Minus(esp, 3);
+            Quaternion vec;
+            var ptr = ILIntepreter.Minus(esp, 1);
+            vec.w = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 2);
+            vec.z = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 3);
+            vec.y = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 4);
+            vec.x = *(float*)&ptr->Value;
 
-        f = ILIntepreter.Minus(dst, 3);
-        v = ILIntepreter.Minus(esp, 3);
-        *f = *v;
+            PushQuaternion(ref vec, intp, ptr, mStack);
+        }
+        else
+        {
+            ret = ILIntepreter.Minus(esp, 5);
+            var instance = ILIntepreter.GetObjectAndResolveReference(ret);
+            var dst = *(StackObject**)&instance->Value;
+            var f = ILIntepreter.Minus(dst, 2);
+            var v = ILIntepreter.Minus(esp, 4);
+            *f = *v;
 
-        f = ILIntepreter.Minus(dst, 4);
-        v = ILIntepreter.Minus(esp, 2);
-        *f = *v;
+            f = ILIntepreter.Minus(dst, 3);
+            v = ILIntepreter.Minus(esp, 3);
+            *f = *v;
 
-        f = ILIntepreter.Minus(dst, 1);
-        v = ILIntepreter.Minus(esp, 1);
-        *f = *v;
+            f = ILIntepreter.Minus(dst, 4);
+            v = ILIntepreter.Minus(esp, 2);
+            *f = *v;
 
+            f = ILIntepreter.Minus(dst, 1);
+            v = ILIntepreter.Minus(esp, 1);
+            *f = *v;
+        }
         return ret;
     }
 

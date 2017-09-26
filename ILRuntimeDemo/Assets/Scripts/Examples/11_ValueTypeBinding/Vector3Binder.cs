@@ -306,41 +306,72 @@ public unsafe class Vector3Binder : ValueTypeBinder<Vector3>
         return ret + 1;
     }
 
-    static StackObject* NewVector3(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* NewVector3(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
     {
-        var ret = ILIntepreter.Minus(esp, 4);
-        var instance = ILIntepreter.GetObjectAndResolveReference(ret);
-        var dst = *(StackObject**)&instance->Value;
-        var f = ILIntepreter.Minus(dst, 1);
-        var v = ILIntepreter.Minus(esp, 3);
-        *f = *v;
+        StackObject* ret;
+        if (isNewObj)
+        {
+            ret = ILIntepreter.Minus(esp, 2);
+            Vector3 vec;
+            var ptr = ILIntepreter.Minus(esp, 1);
+            vec.z = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 2);
+            vec.y = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 3);
+            vec.x = *(float*)&ptr->Value;
 
-        f = ILIntepreter.Minus(dst, 2);
-        v = ILIntepreter.Minus(esp, 2);
-        *f = *v;
+            PushVector3(ref vec, intp, ptr, mStack);
+        }
+        else
+        {
+            ret = ILIntepreter.Minus(esp, 4);
+            var instance = ILIntepreter.GetObjectAndResolveReference(ret);
+            var dst = *(StackObject**)&instance->Value;
+            var f = ILIntepreter.Minus(dst, 1);
+            var v = ILIntepreter.Minus(esp, 3);
+            *f = *v;
 
-        f = ILIntepreter.Minus(dst, 3);
-        v = ILIntepreter.Minus(esp, 1);
-        *f = *v;
+            f = ILIntepreter.Minus(dst, 2);
+            v = ILIntepreter.Minus(esp, 2);
+            *f = *v;
 
+            f = ILIntepreter.Minus(dst, 3);
+            v = ILIntepreter.Minus(esp, 1);
+            *f = *v;
+        }
         return ret;
     }
-    static StackObject* NewVector3_2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* NewVector3_2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
     {
-        var ret = ILIntepreter.Minus(esp, 3);
-        var instance = ILIntepreter.GetObjectAndResolveReference(ret);
-        var dst = *(StackObject**)&instance->Value;
-        var f = ILIntepreter.Minus(dst, 1);
-        var v = ILIntepreter.Minus(esp, 2);
-        *f = *v;
+        StackObject* ret;
+        if (isNewObj)
+        {
+            ret = ILIntepreter.Minus(esp, 1);
+            Vector3 vec;
+            var ptr = ILIntepreter.Minus(esp, 1);
+            vec.y = *(float*)&ptr->Value;
+            ptr = ILIntepreter.Minus(esp, 2);
+            vec.x = *(float*)&ptr->Value;
+            vec.z = 0;
 
-        f = ILIntepreter.Minus(dst, 2);
-        v = ILIntepreter.Minus(esp, 1);
-        *f = *v;
+            PushVector3(ref vec, intp, ptr, mStack);
+        }
+        else
+        {
+            ret = ILIntepreter.Minus(esp, 3);
+            var instance = ILIntepreter.GetObjectAndResolveReference(ret);
+            var dst = *(StackObject**)&instance->Value;
+            var f = ILIntepreter.Minus(dst, 1);
+            var v = ILIntepreter.Minus(esp, 2);
+            *f = *v;
 
-        f = ILIntepreter.Minus(dst, 3);
-        *(float*)&f->Value = 0f;
+            f = ILIntepreter.Minus(dst, 2);
+            v = ILIntepreter.Minus(esp, 1);
+            *f = *v;
 
+            f = ILIntepreter.Minus(dst, 3);
+            *(float*)&f->Value = 0f;
+        }
         return ret;
     }
 
