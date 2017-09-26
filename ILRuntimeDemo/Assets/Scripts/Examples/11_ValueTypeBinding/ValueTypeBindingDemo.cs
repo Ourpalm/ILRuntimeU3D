@@ -62,6 +62,8 @@ public class ValueTypeBindingDemo : MonoBehaviour
         RunTest();
         yield return new WaitForSeconds(0.5f);
         RunTest2();
+        yield return new WaitForSeconds(0.5f);
+        RunTest3();
     }
 
     void InitializeILRuntime()
@@ -69,6 +71,7 @@ public class ValueTypeBindingDemo : MonoBehaviour
         //这里做一些ILRuntime的注册，这里我们注册值类型Binder，注释和解注下面的代码来对比性能差别
         appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
         appdomain.RegisterValueTypeBinder(typeof(Quaternion), new QuaternionBinder());
+        appdomain.RegisterValueTypeBinder(typeof(Vector2), new Vector2Binder());
     }
 
     void RunTest()
@@ -86,5 +89,13 @@ public class ValueTypeBindingDemo : MonoBehaviour
         Debug.Log("Quaternion测试");
         //调用无参数静态方法，appdomain.Invoke("类名", "方法名", 对象引用, 参数列表);
         appdomain.Invoke("HotFix_Project.TestValueType", "RunTest2", null, null);
+    }
+
+    void RunTest3()
+    {
+        Debug.Log("=======================================");
+        Debug.Log("Vector2测试");
+        //调用无参数静态方法，appdomain.Invoke("类名", "方法名", 对象引用, 参数列表);
+        appdomain.Invoke("HotFix_Project.TestValueType", "RunTest3", null, null);
     }
 }

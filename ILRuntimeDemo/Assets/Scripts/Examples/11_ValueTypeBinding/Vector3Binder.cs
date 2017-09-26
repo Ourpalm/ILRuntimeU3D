@@ -55,6 +55,10 @@ public unsafe class Vector3Binder : ValueTypeBinder<Vector3>
         method = type.GetMethod("op_Multiply", flag, null, args, null);
         appdomain.RegisterCLRMethodRedirection(method, Vector3_Multiply);
 
+        args = new Type[] { typeof(float), typeof(Vector3) };
+        method = type.GetMethod("op_Multiply", flag, null, args, null);
+        appdomain.RegisterCLRMethodRedirection(method, Vector3_Multiply2);
+
         args = new Type[] { typeof(Vector3), typeof(float) };
         method = type.GetMethod("op_Division", flag, null, args, null);
         appdomain.RegisterCLRMethodRedirection(method, Vector3_Division);

@@ -322,6 +322,7 @@
     <Compile Include="Assets\Scripts\Examples\08_MonoBehaviour\MonoBehaviourDemo.cs" />
     <Compile Include="Assets\Scripts\Examples\09_Reflection\ReflectionDemo.cs" />
     <Compile Include="Assets\Scripts\Examples\11_ValueTypeBinding\QuaternionBinder.cs" />
+    <Compile Include="Assets\Scripts\Examples\11_ValueTypeBinding\Vector2Binder.cs" />
     <Compile Include="Assets\Scripts\Examples\11_ValueTypeBinding\Vector3Binder.cs" />
     <Compile Include="Assets\Scripts\Examples\11_ValueTypeBinding\ValueTypeBindingDemo.cs" />
     <Compile Include="Assets\Scripts\Examples\10_LitJson\LitJsonDemo.cs" />
