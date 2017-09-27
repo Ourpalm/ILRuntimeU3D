@@ -323,7 +323,7 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         }
         else
         {
-            vec = (Quaternion)mStack[a->Value];
+            vec = (Quaternion)StackObject.ToObject(a, intp.AppDomain, mStack);
             intp.Free(ptr);
         }
     }

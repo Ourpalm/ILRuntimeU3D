@@ -437,7 +437,7 @@ public unsafe class Vector2Binder : ValueTypeBinder<Vector2>
         }
         else
         {
-            vec = (Vector2)mStack[a->Value];
+            vec = (Vector2)StackObject.ToObject(a, intp.AppDomain, mStack);
             intp.Free(ptr);
         }
     }
