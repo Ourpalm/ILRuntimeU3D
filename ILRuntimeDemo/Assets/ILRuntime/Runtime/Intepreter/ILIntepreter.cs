@@ -1794,6 +1794,14 @@ namespace ILRuntime.Runtime.Intepreter
                                                                     }
                                                                 }
                                                                 break;
+                                                            case ObjectTypes.ValueTypeObjectReference:
+                                                                {
+                                                                    var dst = *(StackObject**)&objRef->Value;
+                                                                    var ct = domain.GetType(dst->Value) as CLRType;
+                                                                    var binder = ct.ValueTypeBinder;
+                                                                    binder.CopyValueTypeToStack(obj, dst, mStack);
+                                                                }
+                                                                break;
                                                             default:
                                                                 throw new NotImplementedException();
                                                         }
@@ -1813,7 +1821,8 @@ namespace ILRuntime.Runtime.Intepreter
                                 break;
                             case OpCodeEnum.Ldfld:
                                 {
-                                    StackObject* objRef = GetObjectAndResolveReference(esp - 1);
+                                    var ret = esp - 1;
+                                    StackObject* objRef = GetObjectAndResolveReference(ret);
                                     if (objRef->ObjectType == ObjectTypes.ValueTypeObjectReference)
                                     {
                                         var dst = *(StackObject**)&objRef->Value;
@@ -1822,18 +1831,18 @@ namespace ILRuntime.Runtime.Intepreter
                                             dst = Minus(dst, (int)ip->TokenLong + 1);
                                         else
                                             dst = Minus(dst, ((CLRType)ft).FieldIndexMapping[(int)ip->TokenLong] + 1);
-                                        CopyToStack(objRef, dst, mStack);
+                                        CopyToStack(ret, dst, mStack);
                                     }
                                     else
                                     {
                                         object obj = RetriveObject(objRef, mStack);
-                                        Free(esp - 1);
+                                        Free(ret);
                                         if (obj != null)
                                         {
                                             if (obj is ILTypeInstance)
                                             {
                                                 ILTypeInstance instance = obj as ILTypeInstance;
-                                                instance.PushToStack((int)ip->TokenLong, esp - 1, AppDomain, mStack);
+                                                instance.PushToStack((int)ip->TokenLong, ret, AppDomain, mStack);
                                             }
                                             else
                                             {
@@ -1846,7 +1855,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                     var val = ((CLRType)type).GetFieldValue(token, obj);
                                                     if (val is CrossBindingAdaptorType)
                                                         val = ((CrossBindingAdaptorType)val).ILInstance;
-                                                    PushObject(esp - 1, mStack, val, ft.FieldType == typeof(object));
+                                                    PushObject(ret, mStack, val, ft.FieldType == typeof(object));
                                                 }
                                                 else
                                                     throw new TypeLoadException();
@@ -3069,6 +3078,10 @@ namespace ILRuntime.Runtime.Intepreter
                                             case ObjectTypes.Double:
                                                 arr.SetValue(*(double*)&val->Value, idx->Value);
                                                 break;
+                                            case ObjectTypes.ValueTypeObjectReference:
+                                                ArraySetValue(arr, StackObject.ToObject(val, domain, mStack), idx->Value);
+                                                FreeStackValueType(esp - 1);
+                                                break;
                                             default:
                                                 throw new NotImplementedException();
                                         }
@@ -3106,6 +3119,10 @@ namespace ILRuntime.Runtime.Intepreter
                                                 {
                                                     ((double[])arr)[idx->Value] = *(double*)&val->Value;
                                                 }
+                                                break;
+                                            case ObjectTypes.ValueTypeObjectReference:
+                                                ArraySetValue(arr, StackObject.ToObject(val, domain, mStack), idx->Value);
+                                                FreeStackValueType(esp - 1);
                                                 break;
                                             default:
                                                 throw new NotImplementedException();
@@ -4047,6 +4064,9 @@ namespace ILRuntime.Runtime.Intepreter
                             obj = ((CLRType)t).GetFieldValue(idx, null);
                         }
                     }
+                    break;
+                case ObjectTypes.ValueTypeObjectReference:
+                    obj = StackObject.ToObject(objRef, domain, mStack);
                     break;
                 default:
                     throw new NotImplementedException();
