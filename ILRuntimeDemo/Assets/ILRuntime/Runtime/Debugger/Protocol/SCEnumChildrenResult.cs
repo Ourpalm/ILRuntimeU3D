@@ -5,9 +5,8 @@ using System.Text;
 
 namespace ILRuntime.Runtime.Debugger.Protocol
 {
-    public class CSResolveVariable
+    public class SCEnumChildrenResult
     {
-        public int ThreadHashCode { get; set; }
-        public VariableReference Variable { get; set; }
+        public VariableInfo[] Children { get; set; }
     }
 }
