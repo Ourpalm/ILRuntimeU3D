@@ -12,7 +12,8 @@ using ILRuntime.Runtime.Enviorment;
 public class MonoBehaviourDemo : MonoBehaviour
 {
     static MonoBehaviourDemo instance;
-
+    System.IO.MemoryStream fs;
+    System.IO.MemoryStream p;
     public static MonoBehaviourDemo Instance
     {
         get { return instance; }
@@ -59,22 +60,27 @@ public class MonoBehaviourDemo : MonoBehaviour
         if (!string.IsNullOrEmpty(www.error))
             UnityEngine.Debug.LogError(www.error);
         byte[] pdb = www.bytes;
-        using (System.IO.MemoryStream fs = new MemoryStream(dll))
-        {
-            using (System.IO.MemoryStream p = new MemoryStream(pdb))
-            {
-                appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
-            }
-        }
+        fs = new MemoryStream(dll);
+        p = new MemoryStream(pdb);
+        appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
 
         InitializeILRuntime();
         OnHotFixLoaded();
     }
 
+    private void OnDestroy()
+    {
+        fs.Close();
+        p.Close();
+    }
+
     unsafe void InitializeILRuntime()
     {
         //这里做一些ILRuntime的注册
+        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
+        appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
+        ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
     }
 
     unsafe void OnHotFixLoaded()

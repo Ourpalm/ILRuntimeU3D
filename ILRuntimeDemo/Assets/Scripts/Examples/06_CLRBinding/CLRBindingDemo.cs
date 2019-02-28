@@ -103,8 +103,8 @@ public class CLRBindingDemo : MonoBehaviour
             Debug.Log("ILRuntime->Generate CLR Binding Code by Analysis是ILRT1.2版新加入的功能，可以根据热更DLL自动生成绑定代码");
             
             //由于CLR重定向只能重定向一次，并且CLR绑定就是利用的CLR重定向，所以请在初始化最后阶段再执行下面的代码，以保证CLR重定向生效
-            //请在生成了绑定代码后注释下面这行代码
-            throw new System.Exception("请在生成了绑定代码后再运行这个示例");
+            //请在生成了绑定代码后注释下面这行
+            //throw new System.Exception("请在生成了绑定代码后再运行这个示例");//
             //请在生成了绑定代码后解除下面这行的注释
             //请在生成了绑定代码后解除下面这行的注释
             //请在生成了绑定代码后解除下面这行的注释

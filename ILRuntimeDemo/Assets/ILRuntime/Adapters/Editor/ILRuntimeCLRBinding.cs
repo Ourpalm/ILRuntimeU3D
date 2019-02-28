@@ -42,10 +42,11 @@ public class ILRuntimeCLRBinding
         using (System.IO.FileStream fs = new System.IO.FileStream("Assets/StreamingAssets/HotFix_Project.dll", System.IO.FileMode.Open, System.IO.FileAccess.Read))
         {
             domain.LoadAssembly(fs);
+
+            //Crossbind Adapter is needed to generate the correct binding code
+            InitILRuntime(domain);
+            ILRuntime.Runtime.CLRBinding.BindingCodeGenerator.GenerateBindingCode(domain, "Assets/ILRuntime/Generated");
         }
-        //Crossbind Adapter is needed to generate the correct binding code
-        InitILRuntime(domain);
-        ILRuntime.Runtime.CLRBinding.BindingCodeGenerator.GenerateBindingCode(domain, "Assets/ILRuntime/Generated");
     }
 
     static void InitILRuntime(ILRuntime.Runtime.Enviorment.AppDomain domain)
@@ -54,6 +55,7 @@ public class ILRuntimeCLRBinding
         domain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         domain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
         domain.RegisterCrossBindingAdaptor(new InheritanceAdapter());
+        domain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
     }
 }
 #endif
