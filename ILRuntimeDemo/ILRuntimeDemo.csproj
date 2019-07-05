@@ -71,11 +71,14 @@
     <Reference Include="UnityEngine.VR">
       <HintPath>C:/Program Files/Unity5_5_4p5/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Assets/Plugins/Mono.Cecil.dll</HintPath>
+    <Reference Include="ILRuntime.Mono.Cecil.Mdb">
+      <HintPath>Assets/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>Assets/Plugins/Mono.Cecil.Pdb.dll</HintPath>
+    <Reference Include="ILRuntim.Mono.Cecil">
+      <HintPath>Assets/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="ILRuntime.Mono.Cecil.Pdb">
+      <HintPath>Assets/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity5_5_4p5/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>

@@ -62,7 +62,7 @@ public class MonoBehaviourDemo : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
+        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
 
         InitializeILRuntime();
         OnHotFixLoaded();

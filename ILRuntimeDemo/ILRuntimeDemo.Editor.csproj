@@ -116,11 +116,14 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>Assets/Plugins/Mono.Cecil.Pdb.dll</HintPath>
+    <Reference Include="ILRuntime.Mono.Cecil.Mdb">
+      <HintPath>Assets/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Assets/Plugins/Mono.Cecil.dll</HintPath>
+    <Reference Include="ILRuntim.Mono.Cecil">
+      <HintPath>Assets/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="ILRuntime.Mono.Cecil.Pdb">
+      <HintPath>Assets/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
