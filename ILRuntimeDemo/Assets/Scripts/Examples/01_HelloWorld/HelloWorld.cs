@@ -9,6 +9,8 @@ public class HelloWorld : MonoBehaviour
     //大家在正式项目中请全局只创建一个AppDomain
     AppDomain appdomain;
 
+    System.IO.MemoryStream fs;
+    System.IO.MemoryStream p;
     void Start()
     {
         StartCoroutine(LoadHotFixAssembly());
@@ -46,13 +48,9 @@ public class HelloWorld : MonoBehaviour
         if (!string.IsNullOrEmpty(www.error))
             UnityEngine.Debug.LogError(www.error);
         byte[] pdb = www.bytes;
-        using (System.IO.MemoryStream fs = new MemoryStream(dll))
-        {
-            using (System.IO.MemoryStream p = new MemoryStream(pdb))
-            {
-                appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
-            }
-        }
+        fs = new MemoryStream(dll);
+        p = new MemoryStream(pdb);
+        appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
 
         InitializeILRuntime();
         OnHotFixLoaded();
@@ -68,6 +66,16 @@ public class HelloWorld : MonoBehaviour
         //HelloWorld，第一次方法调用
         appdomain.Invoke("HotFix_Project.InstanceClass", "StaticFunTest", null, null);
 
+    }
+
+    private void OnDestroy()
+    {
+        if (fs != null)
+            fs.Close();
+        if (p != null)
+            p.Close();
+        fs = null;
+        p = null;
     }
 
     void Update()

@@ -71,11 +71,11 @@
     <Reference Include="UnityEngine.VR">
       <HintPath>C:/Program Files/Unity5_5_4p5/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>Assets/Plugins/Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>Assets/Plugins/Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>Assets/Plugins/Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity5_5_4p5/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
@@ -91,34 +91,6 @@
     <Compile Include="Assets\ILRuntime\CLR\TypeSystem\ILType.cs" />
     <Compile Include="Assets\ILRuntime\CLR\TypeSystem\IType.cs" />
     <Compile Include="Assets\ILRuntime\CLR\Utils\Extensions.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\CLRBindingTestClass_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\CLRBindings.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\CoroutineDemo_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\DelegateDemo_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\LitJson_JsonMapper_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Action_1_String_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Boolean_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_String_Int32_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Collections_Generic_List_1_ILTypeInstance_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Diagnostics_Stopwatch_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Int32_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_NotSupportedException_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_Object_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\System_String_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\TestClassBase_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\TestDelegateFunction_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\TestDelegateMethod_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Component_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Debug_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_GameObject_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Mathf_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Quaternion_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Time_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Transform_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Vector2_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_Vector3_Binding.cs" />
-    <Compile Include="Assets\ILRuntime\Generated\UnityEngine_WaitForSeconds_Binding.cs" />
     <Compile Include="Assets\ILRuntime\Other\ByReferenceKeyComparer.cs" />
     <Compile Include="Assets\ILRuntime\Other\DelegateExportAttribute.cs" />
     <Compile Include="Assets\ILRuntime\Other\NeedAdaptorAttribute.cs" />

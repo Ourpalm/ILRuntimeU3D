@@ -11,6 +11,8 @@ public class LitJsonDemo : MonoBehaviour
     //AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个
     //大家在正式项目中请全局只创建一个AppDomain
     AppDomain appdomain;
+    System.IO.MemoryStream fs;
+    System.IO.MemoryStream p;
 
     void Start()
     {
@@ -49,13 +51,9 @@ public class LitJsonDemo : MonoBehaviour
         if (!string.IsNullOrEmpty(www.error))
             UnityEngine.Debug.LogError(www.error);
         byte[] pdb = www.bytes;
-        using (System.IO.MemoryStream fs = new MemoryStream(dll))
-        {
-            using (System.IO.MemoryStream p = new MemoryStream(pdb))
-            {
-                appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
-            }
-        }
+        fs = new MemoryStream(dll);
+        p = new MemoryStream(pdb);
+        appdomain.LoadAssembly(fs, p, new Mono.Cecil.Pdb.PdbReaderProvider());
 
         InitializeILRuntime();
         OnHotFixLoaded();
@@ -74,5 +72,15 @@ public class LitJsonDemo : MonoBehaviour
         Debug.Log("具体使用方法请看热更项目中的代码");
         //调用无参数静态方法，appdomain.Invoke("类名", "方法名", 对象引用, 参数列表);
         appdomain.Invoke("HotFix_Project.TestJson", "RunTest", null, null);
+    }
+
+    private void OnDestroy()
+    {
+        if (fs != null)
+            fs.Close();
+        if (p != null)
+            p.Close();
+        fs = null;
+        p = null;
     }
 }

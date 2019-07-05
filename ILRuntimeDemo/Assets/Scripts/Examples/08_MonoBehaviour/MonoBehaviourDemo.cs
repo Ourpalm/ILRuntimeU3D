@@ -80,7 +80,7 @@ public class MonoBehaviourDemo : MonoBehaviour
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
-        ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
+        //ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
     }
 
     unsafe void OnHotFixLoaded()
