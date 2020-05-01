@@ -1,0 +1,14 @@
+{
+	"name": "com.ourpalm.ilruntime",
+	"displayName": "ILRuntime",
+	"version": "1.6.0",
+	"unity": "2017.4",
+	"description": "ILRuntime\nC#热更解译器",
+	"keywords": [
+		"ILRuntime",
+		"ilrt",
+		"hotfix"
+	],
+	"category": "Hotfix",
+	"dependencies": {}
+}

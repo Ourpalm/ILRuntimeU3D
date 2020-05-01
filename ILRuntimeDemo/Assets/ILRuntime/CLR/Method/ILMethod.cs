@@ -421,6 +421,12 @@ namespace ILRuntime.CLR.Method
                         var m = appdomain.GetMethod(token, declaringType, this, out invalidToken);
                         if (m != null)
                         {
+                            if(code.Code == OpCodeEnum.Callvirt && m is ILMethod)
+                            {
+                                ILMethod ilm = (ILMethod)m;
+                                if (!ilm.def.IsAbstract && !ilm.def.IsVirtual && !ilm.DeclearingType.IsInterface)
+                                    code.Code = OpCodeEnum.Call;
+                            }
                             if (invalidToken)
                                 code.TokenInteger = m.GetHashCode();
                             else
@@ -613,10 +619,10 @@ namespace ILRuntime.CLR.Method
                 else
                     type = appdomain.GetType(pt, declaringType, this);
 
-                if (isByRef)
-                    type = type.MakeByRefType();
                 if (isArray)
                     type = type.MakeArrayType(rank);
+                if (isByRef)
+                    type = type.MakeByRefType();
                 parameters.Add(type);
             }
         }
