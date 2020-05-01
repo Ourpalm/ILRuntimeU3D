@@ -79,9 +79,16 @@ public class Invocation : MonoBehaviour
         //预先获得IMethod，可以减低每次调用查找方法耗用的时间
         IType type = appdomain.LoadedTypes["HotFix_Project.InstanceClass"];
         //根据方法名称和参数个数获取方法
-        IMethod method = type.GetMethod("StaticFunTest", 0);
+        IMethod method = type.GetMethod("StaticFunTest2", 1);
 
-        appdomain.Invoke(method, null, null);
+        appdomain.Invoke(method, null, 123);
+
+        Debug.Log("通过无GC Alloc方式调用方法");
+        using (var ctx = appdomain.BeginInvoke(method))
+        {
+            ctx.PushInteger(123);
+            ctx.Invoke();
+        }
 
         Debug.Log("指定参数类型来获得IMethod");
         IType intType = appdomain.GetType(typeof(int));
@@ -98,11 +105,23 @@ public class Invocation : MonoBehaviour
         object obj2 = ((ILType)type).Instantiate();
 
         Debug.Log("调用成员方法");
-        int id = (int)appdomain.Invoke("HotFix_Project.InstanceClass", "get_ID", obj, null);
-        Debug.Log("!! HotFix_Project.InstanceClass.ID = " + id);
-        id = (int)appdomain.Invoke("HotFix_Project.InstanceClass", "get_ID", obj2, null);
-        Debug.Log("!! HotFix_Project.InstanceClass.ID = " + id);
+        method = type.GetMethod("get_ID", 0);
+        using (var ctx = appdomain.BeginInvoke(method))
+        {
+            ctx.PushObject(obj);
+            ctx.Invoke();
+            int id = ctx.ReadInteger();
+            Debug.Log("!! HotFix_Project.InstanceClass.ID = " + id);
+        }
 
+        using (var ctx = appdomain.BeginInvoke(method))
+        {
+            ctx.PushObject(obj2);
+            ctx.Invoke();
+            int id = ctx.ReadInteger();
+            Debug.Log("!! HotFix_Project.InstanceClass.ID = " + id);
+        }
+        
         Debug.Log("调用泛型方法");
         IType stringType = appdomain.GetType(typeof(string));
         IType[] genericArguments = new IType[] { stringType };
