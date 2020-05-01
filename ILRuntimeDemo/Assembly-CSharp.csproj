@@ -63,40 +63,46 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Examples\LitJson\IJsonWrapper.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonData.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonException.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonMapper.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonMockWrapper.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonReader.cs" />
-    <Compile Include="Assets\Examples\LitJson\JsonWriter.cs" />
-    <Compile Include="Assets\Examples\LitJson\Lexer.cs" />
-    <Compile Include="Assets\Examples\LitJson\ParserToken.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\01_HelloWorld\HelloWorld.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\02_Invocation\Invocation.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\03_Delegate\DelegateDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\04_Inheritance\Inheritance.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\04_Inheritance\InheritanceAdapter.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\05_CLRRedirection\CLRRedirectionDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\06_CLRBinding\CLRBindingDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\07_Coroutine\CoroutineAdapter.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\07_Coroutine\CoroutineDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\08_MonoBehaviour\MonoBehaviourAdapter.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\08_MonoBehaviour\MonoBehaviourDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\09_Reflection\ReflectionDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\10_LitJson\LitJsonDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\11_ValueTypeBinding\QuaternionBinder.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\11_ValueTypeBinding\ValueTypeBindingDemo.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\11_ValueTypeBinding\Vector2Binder.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\11_ValueTypeBinding\Vector3Binder.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\IJsonWrapper.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonData.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonException.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonMapper.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonMockWrapper.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonReader.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\JsonWriter.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\Lexer.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\LitJson\ParserToken.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\01_HelloWorld\HelloWorld.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\02_Invocation\Invocation.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\03_Delegate\DelegateDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\04_Inheritance\Inheritance.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\04_Inheritance\InheritanceAdapter.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\05_CLRRedirection\CLRRedirectionDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\06_CLRBinding\CLRBindingDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\07_Coroutine\CoroutineAdapter.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\07_Coroutine\CoroutineDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\08_MonoBehaviour\MonoBehaviourAdapter.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\08_MonoBehaviour\MonoBehaviourDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\09_Reflection\ReflectionDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\10_LitJson\LitJsonDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\11_ValueTypeBinding\QuaternionBinder.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\11_ValueTypeBinding\ValueTypeBindingDemo.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\11_ValueTypeBinding\Vector2Binder.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\11_ValueTypeBinding\Vector3Binder.cs" />
     <None Include="Assets\gmcs.rsp" />
     <None Include="Assets\smcs.rsp" />
     <None Include="Assets\link.xml" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.PackageValidationSuite.Editor">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PackageManagerUI.Develop.Editor">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageManagerUI.Develop.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
@@ -113,20 +119,14 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.PackageValidationSuite.Editor.Extension">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.Extension.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageValidationSuite.Editor">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageManagerUI.Develop.Editor">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageManagerUI.Develop.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageValidationSuite.Editor.Extension">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.Extension.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>E:/myexe/unity2019/build/WindowsEditor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

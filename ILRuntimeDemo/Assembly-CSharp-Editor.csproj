@@ -63,8 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Examples\Adapters\Editor\ILRuntimeCLRBinding.cs" />
-    <Compile Include="Assets\Examples\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Adapters\Editor\ILRuntimeCLRBinding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
@@ -74,8 +74,14 @@
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.PackageValidationSuite.Editor">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PackageManagerUI.Develop.Editor">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageManagerUI.Develop.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
@@ -92,20 +98,14 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.PackageValidationSuite.Editor.Extension">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.Extension.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageValidationSuite.Editor">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageManagerUI.Develop.Editor">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageManagerUI.Develop.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageValidationSuite.Editor.Extension">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/Unity.PackageValidationSuite.Editor.Extension.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>E:/myexe/unity2019/build/WindowsEditor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -296,6 +296,12 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.APIComparison.Framework">
+      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/Unity.APIComparison.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="ILRuntim.Mono.Cecil">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
     </Reference>
@@ -304,12 +310,6 @@
     </Reference>
     <Reference Include="ILRuntime.Mono.Cecil.Mdb">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.APIComparison.Framework">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/Unity.APIComparison.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/log4net.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>D:/myexe/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
