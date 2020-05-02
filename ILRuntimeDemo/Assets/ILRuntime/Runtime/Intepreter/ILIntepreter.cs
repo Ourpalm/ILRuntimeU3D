@@ -5313,7 +5313,14 @@ namespace ILRuntime.Runtime.Intepreter
             }
             else
             {
-                return PushNull(esp);
+                if (isBox)
+                {
+                    esp->ObjectType = ObjectTypes.Object;
+                    esp->Value = mStack.Count;
+                    mStack.Add(obj);
+                }
+                else
+                    return PushNull(esp);
             }
             return esp + 1;
         }

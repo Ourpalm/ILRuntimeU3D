@@ -39,6 +39,13 @@ namespace HotFix_Project
         {
             UnityEngine.Debug.Log("!!! InstanceClass.GenericMethod(), a=" + a);
         }
+
+        public void RefOutMethod(int addition, out List<int> lst, ref int val)
+        {
+            val = val + addition + id;
+            lst = new List<int>();
+            lst.Add(id);
+        }
     }
 
 

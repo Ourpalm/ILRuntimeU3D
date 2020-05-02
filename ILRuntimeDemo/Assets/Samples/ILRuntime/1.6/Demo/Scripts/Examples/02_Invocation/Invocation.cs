@@ -5,6 +5,7 @@ using System.IO;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
+using System.Threading;
 
 public class Invocation : MonoBehaviour
 {
@@ -62,6 +63,10 @@ public class Invocation : MonoBehaviour
 
     void InitializeILRuntime()
     {
+#if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
+        //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
+        appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
+#endif
         //这里做一些ILRuntime的注册，这个示例暂时没有需要注册的
     }
 
@@ -133,6 +138,31 @@ public class Invocation : MonoBehaviour
         genericArguments = new IType[] { intType };
         method = type.GetMethod("GenericMethod", paramList, genericArguments);
         appdomain.Invoke(method, null, 33333);
+
+        Debug.Log("调用带Ref/Out参数的方法");
+        method = type.GetMethod("RefOutMethod", 3);
+        int initialVal = 500;
+        using(var ctx = appdomain.BeginInvoke(method))
+        {
+            //第一个ref/out参数初始值
+            ctx.PushObject(null);
+            //第二个ref/out参数初始值
+            ctx.PushInteger(initialVal);
+            //压入this
+            ctx.PushObject(obj);
+            //压入参数1:addition
+            ctx.PushInteger(100);
+            //压入参数2: lst,由于是ref/out，需要压引用，这里是引用0号位，也就是第一个PushObject的位置
+            ctx.PushReference(0);
+            //压入参数3,val，同ref/out
+            ctx.PushReference(1);
+            ctx.Invoke();
+            //读取0号位的值
+            List<int> lst = ctx.ReadObject<List<int>>(0);
+            initialVal = ctx.ReadInteger(1);
+
+            Debug.Log(string.Format("lst[0]={0}, initialVal={1}", lst[0], initialVal));
+        }
     }
 
     void Update()
