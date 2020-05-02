@@ -66,6 +66,10 @@ public class ValueTypeBindingDemo : MonoBehaviour
 
     void InitializeILRuntime()
     {
+#if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
+        //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
+        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+#endif
         //这里做一些ILRuntime的注册，这里我们注册值类型Binder，注释和解注下面的代码来对比性能差别
         appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
         appdomain.RegisterValueTypeBinder(typeof(Quaternion), new QuaternionBinder());

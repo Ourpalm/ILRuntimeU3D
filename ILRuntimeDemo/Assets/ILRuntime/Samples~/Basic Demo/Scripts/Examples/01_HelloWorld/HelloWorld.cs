@@ -25,6 +25,8 @@ public class HelloWorld : MonoBehaviour
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //这个DLL文件是直接编译HotFix_Project.sln生成的，已经在项目中设置好输出目录为StreamingAssets，在VS里直接编译即可生成到对应目录，无需手动拷贝
+        //工程目录在Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~
+        //以下加载写法只为演示，并没有处理在编辑器切换到Android平台的读取，需要自行修改
 #if UNITY_ANDROID
         WWW www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.dll");
 #else
@@ -58,6 +60,10 @@ public class HelloWorld : MonoBehaviour
 
     void InitializeILRuntime()
     {
+#if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
+        //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
+        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+#endif
         //这里做一些ILRuntime的注册，HelloWorld示例暂时没有需要注册的
     }
 
