@@ -5,6 +5,7 @@ using System.IO;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
+using ILRuntimeDemo;
 
 public abstract class TestClassBase
 {
@@ -13,6 +14,10 @@ public abstract class TestClassBase
         get
         {
             return 0;
+        }
+        set
+        {
+
         }
     }
 
@@ -90,29 +95,23 @@ public class Inheritance : MonoBehaviour
     {
         Debug.Log("首先我们来创建热更里的类实例");
         TestClassBase obj;
-        try
-        {
-            obj = appdomain.Instantiate<TestClassBase>("HotFix_Project.TestInheritance");
-        }
-        catch(System.Exception ex)
-        {
-            Debug.LogError(ex.ToString());
-        }
-        Debug.Log("Oops, 报错了，因为跨域继承必须要注册适配器。 如果是热更DLL里面继承热更里面的类型，不需要任何注册。");
-
-        Debug.Log("所以现在我们来注册适配器");
-        appdomain.RegisterCrossBindingAdaptor(new InheritanceAdapter());
+        Debug.Log("现在我们来注册适配器, 该适配器由ILRuntime/Generate Cross Binding Adapter菜单命令自动生成");
+        appdomain.RegisterCrossBindingAdaptor(new TestClassBaseAdapter());
         Debug.Log("现在再来尝试创建一个实例");
         obj = appdomain.Instantiate<TestClassBase>("HotFix_Project.TestInheritance");
         Debug.Log("现在来调用成员方法");
         obj.TestAbstract(123);
         obj.TestVirtual("Hello");
+        obj.Value = 233;
+        Debug.LogFormat("obj.Value={0}", obj.Value);
+
 
         Debug.Log("现在换个方式创建实例");
         obj = appdomain.Invoke("HotFix_Project.TestInheritance", "NewObject", null, null) as TestClassBase;
         obj.TestAbstract(456);
         obj.TestVirtual("Foobar");
-
+        obj.Value = 2333333;
+        Debug.LogFormat("obj.Value={0}", obj.Value);
     }
 
     void Update()
