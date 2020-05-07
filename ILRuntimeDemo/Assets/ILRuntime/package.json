@@ -1,7 +1,7 @@
 {
   "name": "com.ourpalm.ilruntime",
   "displayName": "ILRuntime",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "unity": "2018.1",
   "description": "ILRuntime\nC#\u70ed\u66f4\u89e3\u8bd1\u5668",
   "keywords": [
