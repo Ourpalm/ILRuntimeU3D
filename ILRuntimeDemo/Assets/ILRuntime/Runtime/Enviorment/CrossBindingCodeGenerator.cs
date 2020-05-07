@@ -6,7 +6,6 @@ using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
 using System.Reflection;
-using System.Data.SqlTypes;
 using System.Threading;
 
 namespace ILRuntime.Runtime.Enviorment
@@ -27,7 +26,7 @@ namespace ILRuntime.Runtime.Enviorment
             StringBuilder sb = new StringBuilder();
             MethodInfo[] methods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             List<MethodInfo> virtMethods = new List<MethodInfo>();
-            foreach(var i in methods)
+            foreach (var i in methods)
             {
                 if (i.IsVirtual || i.IsAbstract || baseType.IsInterface)
                     virtMethods.Add(i);
@@ -127,7 +126,7 @@ namespace ");
                     isGetter = i.Name.StartsWith("get_");
                     oriBuilder = sb;
                     sb = new StringBuilder();
-                    if(!pendingProperties.TryGetValue(pName, out pInfo))
+                    if (!pendingProperties.TryGetValue(pName, out pInfo))
                     {
                         pInfo = new PropertyGenerateInfo();
                         pInfo.Name = pName;
@@ -213,7 +212,7 @@ namespace ");
                 index++;
             }
 
-            foreach(var i in pendingProperties)
+            foreach (var i in pendingProperties)
             {
                 var pInfo = i.Value;
                 string clsName, realClsName;
@@ -285,7 +284,7 @@ namespace ");
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach(var i in param)
+            foreach (var i in param)
             {
                 if (!first)
                     sb.Append(", ");
@@ -296,7 +295,7 @@ namespace ");
                 i.ParameterType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
-            if(returnType != typeof(void))
+            if (returnType != typeof(void))
             {
                 if (!first)
                     sb.Append(", ");
@@ -343,7 +342,7 @@ namespace ");
         {
             if (param.Length > 5)
                 return true;
-            foreach(var i in param)
+            foreach (var i in param)
             {
                 if (i.IsOut || i.ParameterType.IsByRef)
                     return true;
@@ -354,7 +353,7 @@ namespace ");
         static string GetParameterName(ParameterInfo[] param, bool first)
         {
             StringBuilder sb = new StringBuilder();
-            
+
             foreach (var p in param)
             {
                 if (!first)
