@@ -42,6 +42,7 @@ public class CLRBindingDemo : MonoBehaviour
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //这个DLL文件是直接编译HotFix_Project.sln生成的，已经在项目中设置好输出目录为StreamingAssets，在VS里直接编译即可生成到对应目录，无需手动拷贝
+        //工程目录在Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~
 #if UNITY_ANDROID
         WWW www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.dll");
 #else
@@ -67,8 +68,14 @@ public class CLRBindingDemo : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
-
+        try
+        {
+            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        }
+        catch
+        {
+            Debug.LogError("加载热更DLL失败，请确保已经通过VS打开Assets/Samples/ILRuntime/1.6/Demo/HotFix_Project/HotFix_Project.sln编译过热更DLL");
+        }
 
         InitializeILRuntime();
         OnHotFixLoaded();
@@ -80,7 +87,17 @@ public class CLRBindingDemo : MonoBehaviour
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 #endif
-        //这里做一些ILRuntime的注册，这里应该写CLR绑定的注册，为了演示方便，这个例子写在OnHotFixLoaded了
+        //这里做一些ILRuntime的注册，如委托适配器，值类型绑定等等
+
+
+        //初始化CLR绑定请放在初始化的最后一步！！
+        //初始化CLR绑定请放在初始化的最后一步！！
+        //初始化CLR绑定请放在初始化的最后一步！！
+
+        //请在生成了绑定代码后解除下面这行的注释
+        //请在生成了绑定代码后解除下面这行的注释
+        //请在生成了绑定代码后解除下面这行的注释
+        //ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
     }
 
     unsafe void OnHotFixLoaded()
@@ -100,23 +117,11 @@ public class CLRBindingDemo : MonoBehaviour
             Debug.LogWarning("运行这个Demo前请先点击菜单ILRuntime->Generate来生成所需的绑定代码，并按照提示解除下面相关代码的注释");
             Debug.Log("默认情况下，从热更DLL里调用Unity主工程的方法，是通过反射的方式调用的，这个过程中会产生GC Alloc，并且执行效率会偏低");
             
-            Debug.Log("接下来进行CLR绑定注册，在进行注册前，需要先在ILRuntimeCodeGenerator的绑定列表里面，添加上CLRBindingTestClass这个测试类型");
-            Debug.Log("CLR绑定会生成较多C#代码，最终会增大包体和Native Code的内存耗用，所以只添加常用类型和频繁调用的接口即可");
-            Debug.Log("接下来需要点击Unity菜单里面的ILRuntime->Generate CLR Binding Code来生成绑定代码");
-            Debug.Log("ILRuntime->Generate CLR Binding Code by Analysis是ILRT1.2版新加入的功能，可以根据热更DLL自动生成绑定代码");
-            
-            //由于CLR重定向只能重定向一次，并且CLR绑定就是利用的CLR重定向，所以请在初始化最后阶段再执行下面的代码，以保证CLR重定向生效
-            //请在生成了绑定代码后注释下面这行
-            throw new System.Exception("请在生成了绑定代码后再运行这个示例");//
-            //请在生成了绑定代码后解除下面这行的注释
-            //请在生成了绑定代码后解除下面这行的注释
-            //请在生成了绑定代码后解除下面这行的注释
-            //ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
-            //这个只是为了演示加的，平时不需要这么用，直接在InitializeILRuntime方法里面写CLR绑定注册就行了
+            Debug.Log("请在Unity菜单里面的ILRuntime->Generate CLR Binding Code by Analysis来生成绑定代码");
             
             var type = appdomain.LoadedTypes["HotFix_Project.TestCLRBinding"];
             var m = type.GetMethod("RunTest", 0);
-            Debug.Log("现在我们再来试试绑定后的效果");
+            Debug.Log("请解除InitializeILRuntime方法中的注释对比有无CLR绑定对运行耗时和GC开销的影响");
             sw.Reset();
             sw.Start();
             Profiler.BeginSample("RunTest2");

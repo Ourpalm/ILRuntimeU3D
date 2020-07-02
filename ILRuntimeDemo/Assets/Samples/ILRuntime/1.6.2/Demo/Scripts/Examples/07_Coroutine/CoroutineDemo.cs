@@ -4,32 +4,18 @@ using System.Collections.Generic;
 using System.IO;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
+using ILRuntime.CLR.Utils;
+using ILRuntime.Runtime.Intepreter;
+using ILRuntime.Runtime.Stack;
 using ILRuntime.Runtime.Enviorment;
-using ILRuntimeDemo;
 
-public abstract class TestClassBase
+public class CoroutineDemo : MonoBehaviour
 {
-    public virtual int Value
+    static CoroutineDemo instance;
+    public static CoroutineDemo Instance
     {
-        get
-        {
-            return 0;
-        }
-        set
-        {
-
-        }
+        get { return instance; }
     }
-
-    public virtual void TestVirtual(string str)
-    {
-        Debug.Log("!! TestClassBase.TestVirtual, str = " + str);
-    }
-
-    public abstract void TestAbstract(int gg);
-}
-public class Inheritance : MonoBehaviour
-{
     //AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个
     //大家在正式项目中请全局只创建一个AppDomain
     AppDomain appdomain;
@@ -38,6 +24,7 @@ public class Inheritance : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         StartCoroutine(LoadHotFixAssembly());
     }
 
@@ -75,7 +62,14 @@ public class Inheritance : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        try
+        {
+            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        }
+        catch
+        {
+            Debug.LogError("加载热更DLL失败，请确保已经通过VS打开Assets/Samples/ILRuntime/1.6/Demo/HotFix_Project/HotFix_Project.sln编译过热更DLL");
+        }
 
 
         InitializeILRuntime();
@@ -88,35 +82,20 @@ public class Inheritance : MonoBehaviour
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 #endif
-        //这里做一些ILRuntime的注册，这里应该写继承适配器的注册，为了演示方便，这个例子写在OnHotFixLoaded了
+        //这里做一些ILRuntime的注册
+        //使用Couroutine时，C#编译器会自动生成一个实现了IEnumerator，IEnumerator<object>，IDisposable接口的类，因为这是跨域继承，所以需要写CrossBindAdapter（详细请看04_Inheritance教程），Demo已经直接写好，直接注册即可
+        appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
+        appdomain.DebugService.StartDebugService(56000);
     }
 
-    void OnHotFixLoaded()
+    unsafe void OnHotFixLoaded()
     {
-        Debug.Log("首先我们来创建热更里的类实例");
-        TestClassBase obj;
-        Debug.Log("现在我们来注册适配器, 该适配器由ILRuntime/Generate Cross Binding Adapter菜单命令自动生成");
-        appdomain.RegisterCrossBindingAdaptor(new TestClassBaseAdapter());
-        Debug.Log("现在再来尝试创建一个实例");
-        obj = appdomain.Instantiate<TestClassBase>("HotFix_Project.TestInheritance");
-        Debug.Log("现在来调用成员方法");
-        obj.TestAbstract(123);
-        obj.TestVirtual("Hello");
-        obj.Value = 233;
-        Debug.LogFormat("obj.Value={0}", obj.Value);
-
-
-        Debug.Log("现在换个方式创建实例");
-        obj = appdomain.Invoke("HotFix_Project.TestInheritance", "NewObject", null, null) as TestClassBase;
-        obj.TestAbstract(456);
-        obj.TestVirtual("Foobar");
-        obj.Value = 2333333;
-        Debug.LogFormat("obj.Value={0}", obj.Value);
+        appdomain.Invoke("HotFix_Project.TestCoroutine", "RunTest", null, null);
     }
 
-    void Update()
+    public void DoCoroutine(IEnumerator coroutine)
     {
-
+        StartCoroutine(coroutine);
     }
 
     private void OnDestroy()

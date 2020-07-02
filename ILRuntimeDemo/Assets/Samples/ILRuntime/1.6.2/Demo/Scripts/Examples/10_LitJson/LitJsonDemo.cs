@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 
-public class HelloWorld : MonoBehaviour
+public class LitJsonDemo : MonoBehaviour
 {
     //AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个
     //大家在正式项目中请全局只创建一个AppDomain
     AppDomain appdomain;
-
     System.IO.MemoryStream fs;
     System.IO.MemoryStream p;
+
     void Start()
     {
         StartCoroutine(LoadHotFixAssembly());
@@ -25,8 +28,6 @@ public class HelloWorld : MonoBehaviour
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //这个DLL文件是直接编译HotFix_Project.sln生成的，已经在项目中设置好输出目录为StreamingAssets，在VS里直接编译即可生成到对应目录，无需手动拷贝
-        //工程目录在Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~
-        //以下加载写法只为演示，并没有处理在编辑器切换到Android平台的读取，需要自行修改
 #if UNITY_ANDROID
         WWW www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.dll");
 #else
@@ -52,7 +53,14 @@ public class HelloWorld : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        try
+        {
+            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        }
+        catch
+        {
+            Debug.LogError("加载热更DLL失败，请确保已经通过VS打开Assets/Samples/ILRuntime/1.6/Demo/HotFix_Project/HotFix_Project.sln编译过热更DLL");
+        }
 
         InitializeILRuntime();
         OnHotFixLoaded();
@@ -64,14 +72,17 @@ public class HelloWorld : MonoBehaviour
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 #endif
-        //这里做一些ILRuntime的注册，HelloWorld示例暂时没有需要注册的
+        //这里做一些ILRuntime的注册，这里我们对LitJson进行注册
+        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
     }
 
     void OnHotFixLoaded()
     {
-        //HelloWorld，第一次方法调用
-        appdomain.Invoke("HotFix_Project.InstanceClass", "StaticFunTest", null, null);
-
+        Debug.Log("LitJson在使用前需要初始化，请看InitliazeILRuntime方法中的初始化");
+        Debug.Log("LitJson的使用很简单，JsonMapper类里面提供了对象到Json以及Json到对象的转换方法");
+        Debug.Log("具体使用方法请看热更项目中的代码");
+        //调用无参数静态方法，appdomain.Invoke("类名", "方法名", 对象引用, 参数列表);
+        appdomain.Invoke("HotFix_Project.TestJson", "RunTest", null, null);
     }
 
     private void OnDestroy()
@@ -82,10 +93,5 @@ public class HelloWorld : MonoBehaviour
             p.Close();
         fs = null;
         p = null;
-    }
-
-    void Update()
-    {
-
     }
 }
