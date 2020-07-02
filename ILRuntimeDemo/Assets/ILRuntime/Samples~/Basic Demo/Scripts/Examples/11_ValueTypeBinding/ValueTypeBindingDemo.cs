@@ -53,7 +53,14 @@ public class ValueTypeBindingDemo : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        try
+        {
+            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        }
+        catch
+        {
+            Debug.LogError("加载热更DLL失败，请确保已经通过VS打开Assets/Samples/ILRuntime/1.6/Demo/HotFix_Project/HotFix_Project.sln编译过热更DLL");
+        }
 
         InitializeILRuntime();
         yield return new WaitForSeconds(0.5f);

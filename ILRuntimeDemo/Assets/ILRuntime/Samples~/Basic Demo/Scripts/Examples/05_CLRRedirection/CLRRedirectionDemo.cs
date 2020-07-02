@@ -31,6 +31,7 @@ public class CLRRedirectionDemo : MonoBehaviour
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //这个DLL文件是直接编译HotFix_Project.sln生成的，已经在项目中设置好输出目录为StreamingAssets，在VS里直接编译即可生成到对应目录，无需手动拷贝
+        //工程目录在Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~
 #if UNITY_ANDROID
         WWW www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.dll");
 #else
@@ -56,20 +57,29 @@ public class CLRRedirectionDemo : MonoBehaviour
         byte[] pdb = www.bytes;
         fs = new MemoryStream(dll);
         p = new MemoryStream(pdb);
-        appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        try
+        {
+            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+        }
+        catch
+        {
+            Debug.LogError("加载热更DLL失败，请确保已经通过VS打开Assets/Samples/ILRuntime/1.6/Demo/HotFix_Project/HotFix_Project.sln编译过热更DLL");
+        }
 
 
         InitializeILRuntime();
         OnHotFixLoaded();
     }
 
-    void InitializeILRuntime()
+    unsafe void InitializeILRuntime()
     {
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 #endif
-        //这里做一些ILRuntime的注册，这里应该写CLR重定向的注册，为了演示方便，这个例子写在OnHotFixLoaded了
+        //这里做一些ILRuntime的注册
+        var mi = typeof(Debug).GetMethod("Log", new System.Type[] { typeof(object) });
+        appdomain.RegisterCLRMethodRedirection(mi, Log_11);
     }
 
     unsafe void OnHotFixLoaded()
@@ -78,14 +88,11 @@ public class CLRRedirectionDemo : MonoBehaviour
         Debug.Log("详细文档请参见Github主页的相关文档");
         Debug.Log("CLR重定向对ILRuntime底层实现密切相关，因此要完全理解这个Demo，需要大家先看关于ILRuntime实现原理的Demo");
 
-        Debug.Log("下面介绍一个CLR重定向的典型用法，比如我们在DLL里调用Debug.Log，默认情况下是无法显示DLL内堆栈的，像下面这样");
+        Debug.Log("下面介绍一个CLR重定向的典型用法，比如我们在DLL里调用Debug.Log，默认情况下是无法显示DLL内堆栈的");
         
         Debug.Log("但是经过CLR重定向之后可以做到输出DLL内堆栈，接下来进行CLR重定向注册");
 
-        var mi = typeof(Debug).GetMethod("Log", new System.Type[] { typeof(object) });
-        //appdomain.RegisterCLRMethodRedirection(mi, Log_11);
-        //这个只是为了演示加的，平时不要这么用，直接在InitializeILRuntime方法里面写CLR重定向注册就行了
-        Debug.Log("我们再来调用一次刚刚的方法，注意看下一行日志的变化");
+        Debug.Log("请注释和解除InitializeILRuntime方法里的重定向注册，对比下一行日志的变化");
         appdomain.Invoke("HotFix_Project.TestCLRRedirection", "RunTest", null, null);
     }
 
