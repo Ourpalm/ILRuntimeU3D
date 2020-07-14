@@ -6,6 +6,8 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntimeDemo;
+//下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
+#pragma warning disable CS0618
 
 public abstract class TestClassBase
 {
