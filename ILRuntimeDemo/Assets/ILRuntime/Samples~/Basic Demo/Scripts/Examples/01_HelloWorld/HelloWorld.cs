@@ -2,7 +2,8 @@
 using System.Collections;
 using System.IO;
 using ILRuntime.Runtime.Enviorment;
-
+//下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
+#pragma warning disable CS0618
 public class HelloWorld : MonoBehaviour
 {
     //AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个
