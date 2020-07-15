@@ -7,7 +7,7 @@ using System.Collections.Generic;
 [System.Reflection.Obfuscation(Exclude = true)]
 public class ILRuntimeCrossBinding
 {
-   [MenuItem("ILRuntime/Generate Cross Binding Adapter")]
+   [MenuItem("ILRuntime/生成跨域继承适配器")]
     static void GenerateCrossbindAdapter()
     {
         //由于跨域继承特殊性太多，自动生成无法实现完全无副作用生成，所以这里提供的代码自动生成主要是给大家生成个初始模版，简化大家的工作

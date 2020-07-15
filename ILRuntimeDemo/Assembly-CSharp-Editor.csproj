@@ -63,9 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Samples\ILRuntime\1.6.2\Demo\Editor\ILRuntimeCLRBinding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\1.6.2\Demo\Editor\ILRuntimeCrossBinding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\1.6.2\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6.3\Demo\Editor\ILRuntimeCLRBinding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6.3\Demo\Editor\ILRuntimeCrossBinding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6.3\Demo\Editor\ILRuntimeMenu.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6.3\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>

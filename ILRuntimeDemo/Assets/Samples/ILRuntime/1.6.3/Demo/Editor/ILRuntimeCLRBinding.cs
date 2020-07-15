@@ -8,7 +8,7 @@ using ILRuntimeDemo;
 [System.Reflection.Obfuscation(Exclude = true)]
 public class ILRuntimeCLRBinding
 {
-   [MenuItem("ILRuntime/Generate CLR Binding Code by Analysis")]
+   [MenuItem("ILRuntime/通过自动分析热更DLL生成CLR绑定")]
     static void GenerateCLRBindingByAnalysis()
     {
         //用新的分析热更dll调用引用来生成绑定代码
