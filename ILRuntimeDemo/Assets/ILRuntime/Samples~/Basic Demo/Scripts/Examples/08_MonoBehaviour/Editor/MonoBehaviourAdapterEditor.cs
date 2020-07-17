@@ -21,11 +21,14 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
         if (instance != null)
         {
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.FullName);
+            
+            int index = 0;
             foreach (var i in instance.Type.FieldMapping)
             {
                 //这里是取的所有字段，没有处理不是public的
                 var name = i.Key;
-                var type = instance.Type.FieldTypes[i.Value];
+                var type = instance.Type.FieldTypes[index];//在这里不能用i.Value，因为Unity有HideInInspector方法，隐藏序列化的值，但是还是会被计数
+                index++;
                 
                 var cType = type.TypeForCLR;
                 if (cType.IsPrimitive)//如果是基础类型
