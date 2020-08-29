@@ -410,6 +410,7 @@ namespace ILRuntime.Runtime.Enviorment
                     ILType type = new ILType(t, this);
 
                     mapType[t.FullName] = type;
+                    mapTypeToken[type.GetHashCode()] = type;
                     types.Add(type);
 
                 }
@@ -762,6 +763,7 @@ namespace ILRuntime.Runtime.Enviorment
                         if (valid)
                         {
                             mapTypeToken[hash] = res;
+                            mapTypeToken[res.GetHashCode()] = res;
                             if (!string.IsNullOrEmpty(res.FullName))
                                 mapType[res.FullName] = res;
                         }
@@ -785,10 +787,8 @@ namespace ILRuntime.Runtime.Enviorment
                             }
                             mapTypeToken[hash] = res;
                         }
-                        else
-                        {
-                            mapTypeToken[res.GetHashCode()] = res;
-                        }
+                        mapTypeToken[res.GetHashCode()] = res;
+
                         if (!string.IsNullOrEmpty(res.FullName))
                             mapType[res.FullName] = res;
                         return res;

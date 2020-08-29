@@ -339,6 +339,8 @@ namespace ILRuntime.Reflection
 
         public override Type[] GetInterfaces()
         {
+            if (type.Implements == null)
+                return new Type[0];
             var interfaces = new Type[type.Implements.Length];
             for (int i = 0, length = type.Implements.Length; i < length; i++)
             {
@@ -566,6 +568,11 @@ namespace ILRuntime.Reflection
         protected override bool IsPrimitiveImpl()
         {
             return false;
+        }
+
+        public override string ToString()
+        {
+            return type.FullName;
         }
         public override int GetHashCode()
         {
