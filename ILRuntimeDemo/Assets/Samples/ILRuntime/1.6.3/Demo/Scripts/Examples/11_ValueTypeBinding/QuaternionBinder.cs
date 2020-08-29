@@ -32,25 +32,25 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
     public override unsafe void AssignFromStack(ref Quaternion ins, StackObject* ptr, IList<object> mStack)
     {
         var v = ILIntepreter.Minus(ptr, 1);
-        ins.w = *(float*)&v->Value;
-        v = ILIntepreter.Minus(ptr, 2);
         ins.x = *(float*)&v->Value;
-        v = ILIntepreter.Minus(ptr, 3);
+        v = ILIntepreter.Minus(ptr, 2);
         ins.y = *(float*)&v->Value;
-        v = ILIntepreter.Minus(ptr, 4);
+        v = ILIntepreter.Minus(ptr, 3);
         ins.z = *(float*)&v->Value;
+        v = ILIntepreter.Minus(ptr, 4);
+        ins.w = *(float*)&v->Value;
     }
 
     public override unsafe void CopyValueTypeToStack(ref Quaternion ins, StackObject* ptr, IList<object> mStack)
     {
         var v = ILIntepreter.Minus(ptr, 1);
-        *(float*)&v->Value = ins.w;
-        v = ILIntepreter.Minus(ptr, 2);
         *(float*)&v->Value = ins.x;
-        v = ILIntepreter.Minus(ptr, 3);
+        v = ILIntepreter.Minus(ptr, 2);
         *(float*)&v->Value = ins.y;
-        v = ILIntepreter.Minus(ptr, 4);
+        v = ILIntepreter.Minus(ptr, 3);
         *(float*)&v->Value = ins.z;
+        v = ILIntepreter.Minus(ptr, 4);
+        *(float*)&v->Value = ins.w;
     }
     public override void RegisterCLRRedirection(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
     {
@@ -267,19 +267,19 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
             ret = ILIntepreter.Minus(esp, 5);
             var instance = ILIntepreter.GetObjectAndResolveReference(ret);
             var dst = *(StackObject**)&instance->Value;
-            var f = ILIntepreter.Minus(dst, 2);
+            var f = ILIntepreter.Minus(dst, 1);
             var v = ILIntepreter.Minus(esp, 4);
             *f = *v;
 
-            f = ILIntepreter.Minus(dst, 3);
+            f = ILIntepreter.Minus(dst, 2);
             v = ILIntepreter.Minus(esp, 3);
             *f = *v;
 
-            f = ILIntepreter.Minus(dst, 4);
+            f = ILIntepreter.Minus(dst, 3);
             v = ILIntepreter.Minus(esp, 2);
             *f = *v;
 
-            f = ILIntepreter.Minus(dst, 1);
+            f = ILIntepreter.Minus(dst, 4);
             v = ILIntepreter.Minus(esp, 1);
             *f = *v;
         }
@@ -315,10 +315,10 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         if (a->ObjectType == ObjectTypes.ValueTypeObjectReference)
         {
             var src = *(StackObject**)&a->Value;
-            vec.w = *(float*)&ILIntepreter.Minus(src, 1)->Value;
-            vec.x = *(float*)&ILIntepreter.Minus(src, 2)->Value;
-            vec.y = *(float*)&ILIntepreter.Minus(src, 3)->Value;
-            vec.z = *(float*)&ILIntepreter.Minus(src, 4)->Value;
+            vec.x = *(float*)&ILIntepreter.Minus(src, 1)->Value;
+            vec.y = *(float*)&ILIntepreter.Minus(src, 2)->Value;
+            vec.z = *(float*)&ILIntepreter.Minus(src, 3)->Value;
+            vec.w = *(float*)&ILIntepreter.Minus(src, 4)->Value;
             intp.FreeStackValueType(ptr);
         }
         else
