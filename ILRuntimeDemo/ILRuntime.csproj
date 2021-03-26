@@ -336,9 +336,6 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="ILRuntim.Mono.Cecil">
-      <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="ILRuntime.Mono.Cecil.Mdb">
       <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
@@ -350,6 +347,9 @@
     </Reference>
     <Reference Include="Unity.APIComparison.Framework">
       <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/Unity.APIComparison.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ILRuntime.Mono.Cecil">
+      <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Program Files/Unity2019.4.12/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

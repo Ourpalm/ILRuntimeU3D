@@ -10,7 +10,7 @@ public class ILRuntimeMenu
    [MenuItem("ILRuntime/安装VS调试插件")]
     static void InstallDebugger()
     {   
-        EditorUtility.OpenWithDefaultApp("Assets/Samples/ILRuntime/1.6.6/Demo/Debugger~/ILRuntimeDebuggerLauncher.vsix");
+        EditorUtility.OpenWithDefaultApp("Assets/Samples/ILRuntime/1.6.7/Demo/Debugger~/ILRuntimeDebuggerLauncher.vsix");
     }
 
     [MenuItem("ILRuntime/打开ILRuntime中文文档")]
