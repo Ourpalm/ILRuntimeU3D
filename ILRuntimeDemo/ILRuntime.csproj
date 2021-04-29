@@ -47,6 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Unity/VSTU</UnityProjectGenerator>
+    <UnityProjectGeneratorVersion>4.9.1.0</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>2019.4.12t2</UnityVersion>
@@ -128,15 +129,27 @@
     <Compile Include="Assets\ILRuntime\Runtime\Enviorment\InvocationContext.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Enviorment\ValueTypeBinder.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Extensions.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\ILRuntimeJITAttribute.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\DelegateAdapter.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\ILIntepreter.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\ILRuntimeException.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\ILTypeInstance.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\OpCodes\OpCode.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\OpCodes\OpCodeEnum.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\OpCodes\OpCodeREnum.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\AsyncJITCompileWorker.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\CodeBasicBlock.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\ILIntepreter.Register.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\JITCompiler.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.BCP.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.FCP.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.InlineMethod.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.RegisterCleanup.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.Utils.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Stack\RuntimeStack.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Stack\StackFrame.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Stack\StackObject.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Stack\StackObjectAllocator.cs" />
     <None Include="Assets\ILRuntime\ILRuntime.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Program Files/Unity2019.4.12/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -336,6 +349,9 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="ILRuntime.Mono.Cecil">
+      <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="ILRuntime.Mono.Cecil.Mdb">
       <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
@@ -347,9 +363,6 @@
     </Reference>
     <Reference Include="Unity.APIComparison.Framework">
       <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Library/PackageCache/com.unity.package-validation-suite@0.7.10-preview/Lib/Editor/Unity.APIComparison.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="ILRuntime.Mono.Cecil">
-      <HintPath>E:/SVN/ILRuntimeU3D/ILRuntimeDemo/Assets/ILRuntime/Plugins/ILRuntime.Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Program Files/Unity2019.4.12/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

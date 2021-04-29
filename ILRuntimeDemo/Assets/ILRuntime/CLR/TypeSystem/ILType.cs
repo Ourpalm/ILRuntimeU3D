@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using ILRuntime.Mono.Cecil;
+using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Intepreter;
@@ -44,9 +45,12 @@ namespace ILRuntime.CLR.TypeSystem
         IType firstCLRBaseType, firstCLRInterface;
         int hashCode = -1;
         static int instance_id = 0x10000000;
+        ILRuntimeJITFlags jitFlags;
         public TypeDefinition TypeDefinition { get { return definition; } }
         bool mToStringGot, mEqualsGot, mGetHashCodeGot;
         IMethod mToString, mEquals, mGetHashCode;
+        int valuetypeFieldCount, valuetypeManagedCount;
+        bool valuetypeSizeCalculated;
 
         public IMethod ToStringMethod
         {
@@ -283,6 +287,7 @@ namespace ILRuntime.CLR.TypeSystem
             this.typeRef = def;
             RetriveDefinitino(def);
             appdomain = domain;
+            jitFlags = domain.DefaultJITFlags;
         }
 
         /// <summary>
@@ -671,6 +676,18 @@ namespace ILRuntime.CLR.TypeSystem
 
         void InitializeMethods()
         {
+            if (definition.HasCustomAttributes)
+            {
+                for (int i = 0; i < definition.CustomAttributes.Count; i++)
+                {
+                    ILRuntimeJITFlags f;
+                    if (definition.CustomAttributes[i].GetJITFlags(AppDomain, out f))
+                    {
+                        this.jitFlags = f;
+                        break;
+                    }
+                }
+            }
             methods = new Dictionary<string, List<ILMethod>>();
             constructors = new List<ILMethod>();
             if (definition == null)
@@ -680,9 +697,9 @@ namespace ILRuntime.CLR.TypeSystem
                 if (i.IsConstructor)
                 {
                     if (i.IsStatic)
-                        staticConstructor = new ILMethod(i, this, appdomain);
+                        staticConstructor = new ILMethod(i, this, appdomain, jitFlags);
                     else
-                        constructors.Add(new ILMethod(i, this, appdomain));
+                        constructors.Add(new ILMethod(i, this, appdomain, jitFlags));
                 }
                 else
                 {
@@ -692,7 +709,7 @@ namespace ILRuntime.CLR.TypeSystem
                         lst = new List<ILMethod>();
                         methods[i.Name] = lst;
                     }
-                    var m = new ILMethod(i, this, appdomain);
+                    var m = new ILMethod(i, this, appdomain, jitFlags);
                     lst.Add(m);
                 }
             }
@@ -1263,6 +1280,50 @@ namespace ILRuntime.CLR.TypeSystem
                 }
             }
             return size;
+        }
+
+        public void GetValueTypeSize(out int fieldCout, out int managedCount)
+        {
+            if (!valuetypeSizeCalculated)
+            {
+                valuetypeFieldCount = FieldTypes.Length + 1;
+                valuetypeManagedCount = 0;
+                for (int i = 0; i < FieldTypes.Length; i++)
+                {
+                    var ft = FieldTypes[i];
+                    if (ft.IsValueType)
+                    {
+                        if (!ft.IsPrimitive && !ft.IsEnum)
+                        {
+                            if (ft is ILType || ((CLRType)ft).ValueTypeBinder != null)
+                            {
+                                int fSize, fmCnt;
+                                ft.GetValueTypeSize(out fSize, out fmCnt);
+                                valuetypeFieldCount += fSize;
+                                valuetypeManagedCount += fmCnt;
+                            }
+                            else
+                            {
+                                valuetypeManagedCount++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        valuetypeManagedCount++;
+                    }
+                }
+                if (BaseType != null && BaseType is ILType)
+                {
+                    int fSize, fmCnt;
+                    BaseType.GetValueTypeSize(out fSize, out fmCnt);
+                    valuetypeFieldCount += fSize - 1;//no header for base type fields
+                    valuetypeManagedCount += fmCnt;
+                }
+                valuetypeSizeCalculated = true;
+            }
+            fieldCout = valuetypeFieldCount;
+            managedCount = valuetypeManagedCount;
         }
 
         public override int GetHashCode()

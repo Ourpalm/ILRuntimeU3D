@@ -5,3 +5,5 @@ obj/
 .vs
 Library/
 Temp/
+ILRuntimeDemo/Packages/packages-lock.json
+ILRuntimeDemo/.vsconfig
