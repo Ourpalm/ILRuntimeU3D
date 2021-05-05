@@ -30,6 +30,7 @@ public class Performance : MonoBehaviour
     private void Awake()
     {
         tests.Add("Test01");
+        tests.Add("TestMandelbrot");
         var go = panelButton.GetChild(0).gameObject;
         go.SetActive(false);
 
@@ -163,5 +164,10 @@ public class Performance : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public static bool MandelbrotCheck(float workX, float workY)
+    {
+        return ((workX * workX) + (workY * workY)) < 4.0f;
     }
 }
