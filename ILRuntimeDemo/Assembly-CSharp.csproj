@@ -90,6 +90,7 @@
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\11_ValueTypeBinding\ValueTypeBindingDemo.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\11_ValueTypeBinding\Vector2Binder.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\11_ValueTypeBinding\Vector3Binder.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\12_Performance\Performance.cs" />
     <None Include="Assets\gmcs.rsp" />
     <None Include="Assets\smcs.rsp" />
     <None Include="Assets\link.xml" />

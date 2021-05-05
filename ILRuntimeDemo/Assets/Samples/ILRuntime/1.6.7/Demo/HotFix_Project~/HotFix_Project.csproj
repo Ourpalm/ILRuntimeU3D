@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestJson.cs" />
+    <Compile Include="TestPerformance.cs" />
     <Compile Include="TestValueType.cs" />
     <Compile Include="TestMonoBehaviour.cs" />
     <Compile Include="TestCoroutine.cs" />
