@@ -142,6 +142,7 @@
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\ILIntepreter.Register.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\JITCompiler.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.BCP.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.ELDC.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.FCP.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.InlineMethod.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.RegisterCleanup.cs" />
