@@ -4,7 +4,9 @@ obj/
 *.user
 .vs
 Library/
+Logs/
 Temp/
+UserSettings/
 ILRuntimeDemo/Packages/packages-lock.json
 ILRuntimeDemo/.vsconfig
 /out

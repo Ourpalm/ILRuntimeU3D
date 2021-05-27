@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine.UI;
 using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
+using XLua;
 //下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
 #pragma warning disable CS0618
 public class Performance : MonoBehaviour
@@ -69,6 +70,60 @@ public class Performance : MonoBehaviour
         //ILRuntimeJITFlags.JITImmediately表示默认使用寄存器VM执行所有方法
         appdomain = new ILRuntime.Runtime.Enviorment.AppDomain(ILRuntimeJITFlags.JITImmediately);
         StartCoroutine(LoadHotFixAssembly());
+    }
+
+    public void CallLuaMandelBrot()
+    {
+        string luaStr = @"
+local MandelbrotCheck = function(workX, workY)
+    return ((workX * workX) + (workY * workY)) < 4.0
+end
+local _test2 = function(v)
+    local data = 0.0
+    local iterations = 4
+    local width = 64
+    local height = 64
+    local _os_t = os.clock
+    local _ct = _os_t()
+    for i = 1, iterations do
+        local left = -2.1
+        local right = 1.0
+        local top = -1.3
+        local bottom = 1.3
+        local deltaX = (right - left) / width
+        local deltaY = (bottom - top) / height
+        local coordinateX = left
+        for x = 1, width do
+            local coordinateY = top
+            for y = 1, height do
+                local workX = 0
+                local workY = 0
+                local counter = 0
+                while(counter < 255 and MandelbrotCheck(workX, workY))
+                do
+                    counter = counter + 1
+                    local newX = (workX * workX) - (workY * workY) + coordinateX
+                    workY = 2 * workX * workY + coordinateY
+                    workX = newX;
+                end
+                
+                data = workX + workY
+                coordinateY = coordinateY + deltaY
+            end
+            coordinateX = coordinateX + deltaX
+        end
+    end
+    v = v or 100000
+    local _d =  _os_t()  - _ct
+    print(""data: "",data)
+
+    print(""ses:"", _d)
+end
+_test2()";
+
+        LuaEnv luaenv = null;
+        luaenv = new LuaEnv();
+        luaenv.DoString(luaStr);
     }
 
     IEnumerator LoadHotFixAssembly()
