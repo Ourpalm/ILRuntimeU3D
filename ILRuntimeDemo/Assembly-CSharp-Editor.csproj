@@ -56,16 +56,16 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\XLua\Src\Editor\LinkXmlGen\LinkXmlGen.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Editor\ILRuntimeCrossBinding.cs" />
+    <Compile Include="Assets\XLua\Src\Editor\TemplateRef.cs" />
+    <Compile Include="Assets\XLua\Editor\ExampleConfig.cs" />
+    <Compile Include="Assets\XLua\Src\Editor\Hotfix.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
+    <Compile Include="Assets\XLua\Src\Editor\Generator.cs" />
+    <Compile Include="Assets\XLua\Examples\13_BuildFromCLI\Editor\BuildFromCLI.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Editor\ILRuntimeCLRBinding.cs" />
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Editor\ILRuntimeMenu.cs" />
-    <Compile Include="Assets\XLua\Src\Editor\Generator.cs" />
-    <Compile Include="Assets\XLua\Src\Editor\TemplateRef.cs" />
-    <Compile Include="Assets\XLua\Src\Editor\LinkXmlGen\LinkXmlGen.cs" />
-    <Compile Include="Assets\XLua\Src\Editor\Hotfix.cs" />
-    <Compile Include="Assets\XLua\Editor\ExampleConfig.cs" />
-    <Compile Include="Assets\XLua\Examples\13_BuildFromCLI\Editor\BuildFromCLI.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\XLua\Src\Editor\Template\LuaInterfaceBridge.tpl.txt" />
