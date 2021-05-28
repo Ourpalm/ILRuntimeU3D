@@ -1695,8 +1695,54 @@ namespace ILRuntime.Runtime.Intepreter
                             case OpCodeREnum.Ldind_Ref:
                                 {
                                     reg1 = (r + ip->Register2);
+                                    dst = (r + ip->Register1);
                                     val = GetObjectAndResolveReference(reg1);
-                                    CopyToRegister(ref info, ip->Register1, val);
+                                    switch (val->ObjectType)
+                                    {
+                                        case ObjectTypes.FieldReference:
+                                            obj = mStack[val->Value];
+                                            intVal = val->ValueLow;
+                                            //Free(dst);
+                                            LoadFromFieldReferenceToRegister(ref info, obj, intVal, ip->Register1);
+                                            break;
+                                        case ObjectTypes.ArrayReference:
+                                            {
+                                                obj = mStack[val->Value];
+                                                var idx = val->ValueLow;
+                                                //Free(dst);
+                                                intVal = GetManagedStackIndex(ref info, ip->Register1);
+                                                LoadFromArrayReference(obj, idx, dst, obj.GetType().GetElementType(), mStack, intVal);
+                                            }
+                                            break;
+                                        case ObjectTypes.StaticFieldReference:
+                                            {
+                                                type = AppDomain.GetType(val->Value);
+                                                var idx = val->ValueLow;
+                                                if (type is ILType)
+                                                {
+                                                    ((ILType)type).StaticInstance.CopyToRegister(idx, ref info, ip->Register1);
+                                                }
+                                                else
+                                                {
+                                                    if (!((CLRType)type).CopyFieldToStack(idx, null, this, ref esp, mStack))
+                                                    {
+                                                        var ft = ((CLRType)type).GetField(idx);
+                                                        obj = ((CLRType)type).GetFieldValue(idx, null);
+                                                        if (obj is CrossBindingAdaptorType)
+                                                            obj = ((CrossBindingAdaptorType)obj).ILInstance;
+                                                        AssignToRegister(ref info, ip->Register1, obj, false);
+                                                    }
+                                                    else
+                                                    {
+                                                        esp = PopToRegister(ref info, ip->Register1, esp);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                            CopyToRegister(ref info, ip->Register1, val);
+                                            break;
+                                    }
                                 }
                                 break;
                             case OpCodeREnum.Stind_I:
@@ -2745,7 +2791,7 @@ namespace ILRuntime.Runtime.Intepreter
                                     else
                                     {
                                         bool isILMethod = m is ILMethod;
-
+                                        bool useRegister = isILMethod && ((ILMethod)m).ShouldUseRegisterVM;
                                         if (ip->Operand4 == 0)
                                         {
                                             intVal = m.HasThis ? m.ParameterCount + 1 : m.ParameterCount;
@@ -2767,7 +2813,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                         throw new NotSupportedException();
                                                 }
                                                 CopyToStack(esp, reg1, mStack);
-                                                if (isILMethod && reg1->ObjectType < ObjectTypes.Object)
+                                                if (useRegister && reg1->ObjectType < ObjectTypes.Object)
                                                 {
                                                     mStack.Add(null);
                                                 }
@@ -2797,7 +2843,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                     if (objRef->ObjectType == ObjectTypes.ValueTypeObjectReference)
                                                     {
                                                         dst = *(StackObject**)&objRef->Value;
-                                                        var ft = domain.GetType(dst->Value) as ILType;
+                                                        var ft = domain.GetTypeByIndex(dst->Value) as ILType;
                                                         ilm = ft.GetVirtualMethod(ilm) as ILMethod;
                                                     }
                                                     else
@@ -2808,10 +2854,12 @@ namespace ILRuntime.Runtime.Intepreter
                                                         ilm = ((ILTypeInstance)obj).Type.GetVirtualMethod(ilm) as ILMethod;
                                                     }
                                                 }
-                                                if (ilm.ShouldUseRegisterVM)
+                                                if (useRegister)
                                                     esp = ExecuteR(ilm, esp, out unhandledException);
                                                 else
+                                                {
                                                     esp = Execute(ilm, esp, out unhandledException);
+                                                }
                                                 ValueTypeBasePointer = bp;
                                                 if (unhandledException)
                                                     returned = true;
@@ -2899,7 +2947,7 @@ namespace ILRuntime.Runtime.Intepreter
                                     if (objRef->ObjectType == ObjectTypes.ValueTypeObjectReference)
                                     {
                                         dst = ILIntepreter.ResolveReference(objRef);
-                                        var ft = domain.GetType(dst->Value);
+                                        var ft = domain.GetTypeByIndex(dst->Value);
                                         if (ft is ILType)
                                             CopyToValueTypeField(dst, (int)ip->OperandLong, reg2, mStack);
                                         else
@@ -2975,7 +3023,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                             case ObjectTypes.ValueTypeObjectReference:
                                                                 {
                                                                     dst = ILIntepreter.ResolveReference(objRef);
-                                                                    var ct = domain.GetType(dst->Value) as CLRType;
+                                                                    var ct = domain.GetTypeByIndex(dst->Value) as CLRType;
                                                                     var binder = ct.ValueTypeBinder;
                                                                     binder.CopyValueTypeToStack(obj, dst, mStack);
                                                                 }
@@ -3001,7 +3049,7 @@ namespace ILRuntime.Runtime.Intepreter
                                     if (objRef->ObjectType == ObjectTypes.ValueTypeObjectReference)
                                     {
                                         dst = *(StackObject**)&objRef->Value;
-                                        var ft = domain.GetType(dst->Value);
+                                        var ft = domain.GetTypeByIndex(dst->Value);
                                         if (ft is ILType)
                                             val = dst - ((int)ip->OperandLong + 1);
                                         else
@@ -3232,13 +3280,15 @@ namespace ILRuntime.Runtime.Intepreter
                                             reg1 = esp - m.ParameterCount;
                                             obj = null;
                                             bool isValueType = type.IsValueType;
+                                            bool useRegister = ((ILMethod)m).ShouldUseRegisterVM;
                                             if (isValueType)
                                             {
                                                 stack.AllocValueType(esp, type);
                                                 objRef = esp + 1;
                                                 objRef->ObjectType = ObjectTypes.StackObjectReference;
                                                 *(StackObject**)&objRef->Value = esp;
-                                                mStack.Add(null);
+                                                if (useRegister)
+                                                    mStack.Add(null);
                                                 objRef++;
                                             }
                                             else
@@ -3254,14 +3304,18 @@ namespace ILRuntime.Runtime.Intepreter
                                             for (int i = 0; i < m.ParameterCount; i++)
                                             {
                                                 CopyToStack(esp, reg1 + i, mStack);
-                                                if (esp->ObjectType < ObjectTypes.Object)
+                                                if (esp->ObjectType < ObjectTypes.Object && useRegister)
+                                                {
                                                     mStack.Add(null);
+                                                }
                                                 esp++;
                                             }
-                                            if (((ILMethod)m).ShouldUseRegisterVM)
+                                            if (useRegister)
                                                 esp = ExecuteR(((ILMethod)m), esp, out unhandledException);
                                             else
-                                                esp = Execute(((ILMethod)m), esp, out unhandledException); 
+                                            {
+                                                esp = Execute(((ILMethod)m), esp, out unhandledException);
+                                            }
                                             ValueTypeBasePointer = bp;
                                             if (isValueType)
                                             {
@@ -3626,7 +3680,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                 if (objRef->ObjectType == ObjectTypes.ValueTypeObjectReference)
                                                 {
                                                     dst = *(StackObject**)&objRef->Value;
-                                                    var vt = domain.GetType(dst->Value);
+                                                    var vt = domain.GetTypeByIndex(dst->Value);
                                                     if (vt != type)
                                                         throw new InvalidCastException();
                                                     obj = ((CLRType)vt).ValueTypeBinder.ToObject(dst, mStack);
@@ -5115,7 +5169,9 @@ namespace ILRuntime.Runtime.Intepreter
             }
         }
 
-
+#if NET_4_6 || NET_STANDARD_2_0
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal void CopyToRegister(ref RegisterFrameInfo info, short reg, StackObject* val, IList<object> mStackSrc = null)
         {
             var mStack = info.ManagedStack;
@@ -5274,7 +5330,7 @@ namespace ILRuntime.Runtime.Intepreter
                         if(!CanCopyStackValueType(val,v))
                         {
                             var dst = *(StackObject**)&val->Value;
-                            var ct = domain.GetType(dst->Value);
+                            var ct = domain.GetTypeByIndex(dst->Value);
                             stack.FreeRegisterValueType(v);
                             stack.AllocValueType(v, ct, true);
                         }
@@ -5285,7 +5341,7 @@ namespace ILRuntime.Runtime.Intepreter
                         if (v >= info.RegisterStart && v < info.RegisterEnd)
                         {
                             var dst = ResolveReference(val);
-                            var type = domain.GetType(dst->Value);
+                            var type = domain.GetTypeByIndex(dst->Value);
                             stack.AllocValueType(v, type, true);
                             CopyStackValueType(val, v, mStack);
                         }
@@ -5358,7 +5414,7 @@ namespace ILRuntime.Runtime.Intepreter
             var val = esp - 1;
             if (val->ObjectType == ObjectTypes.ValueTypeObjectReference)
             {
-                var v = Add(info.RegisterStart, reg);
+                var v = info.RegisterStart + reg;
                 if (CanCopyStackValueType(val, v))
                 {
                     CopyStackValueType(val, v, info.ManagedStack);

@@ -60,7 +60,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_TestMethodDelegate_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            global::TestDelegateMethod @TestMethodDelegate = (global::TestDelegateMethod)typeof(global::TestDelegateMethod).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            global::TestDelegateMethod @TestMethodDelegate = (global::TestDelegateMethod)typeof(global::TestDelegateMethod).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             global::DelegateDemo.TestMethodDelegate = @TestMethodDelegate;
             return ptr_of_this_method;
         }
@@ -84,7 +84,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_TestFunctionDelegate_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            global::TestDelegateFunction @TestFunctionDelegate = (global::TestDelegateFunction)typeof(global::TestDelegateFunction).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            global::TestDelegateFunction @TestFunctionDelegate = (global::TestDelegateFunction)typeof(global::TestDelegateFunction).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             global::DelegateDemo.TestFunctionDelegate = @TestFunctionDelegate;
             return ptr_of_this_method;
         }
@@ -108,7 +108,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_TestActionDelegate_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.Action<System.String> @TestActionDelegate = (System.Action<System.String>)typeof(System.Action<System.String>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.Action<System.String> @TestActionDelegate = (System.Action<System.String>)typeof(System.Action<System.String>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             global::DelegateDemo.TestActionDelegate = @TestActionDelegate;
             return ptr_of_this_method;
         }
