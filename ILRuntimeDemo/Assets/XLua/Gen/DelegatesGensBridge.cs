@@ -572,7 +572,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp25(UnityEngine.CustomRenderTexture p0)
+		public void __Gen_Delegate_Imp25(UnityEngine.AsyncOperation p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -594,30 +594,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp26(UnityEngine.CustomRenderTexture p0, int p1)
-		{
-#if THREAD_SAFE || HOTFIX_ENABLE
-            lock (luaEnv.luaEnvLock)
-            {
-#endif
-                RealStatePtr L = luaEnv.rawL;
-                int errFunc = LuaAPI.pcall_prepare(L, errorFuncRef, luaReference);
-                ObjectTranslator translator = luaEnv.translator;
-                translator.Push(L, p0);
-                LuaAPI.xlua_pushinteger(L, p1);
-                
-                PCall(L, 2, 0, errFunc);
-                
-                
-                
-                LuaAPI.lua_settop(L, errFunc - 1);
-                
-#if THREAD_SAFE || HOTFIX_ENABLE
-            }
-#endif
-		}
-        
-		public void __Gen_Delegate_Imp27(UnityEngine.AsyncOperation p0)
+		public void __Gen_Delegate_Imp26(UnityEngine.RectTransform p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -639,7 +616,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp28(UnityEngine.RectTransform p0)
+		public void __Gen_Delegate_Imp27(UnityEngine.Font p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -661,29 +638,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp29(UnityEngine.Font p0)
-		{
-#if THREAD_SAFE || HOTFIX_ENABLE
-            lock (luaEnv.luaEnvLock)
-            {
-#endif
-                RealStatePtr L = luaEnv.rawL;
-                int errFunc = LuaAPI.pcall_prepare(L, errorFuncRef, luaReference);
-                ObjectTranslator translator = luaEnv.translator;
-                translator.Push(L, p0);
-                
-                PCall(L, 1, 0, errFunc);
-                
-                
-                
-                LuaAPI.lua_settop(L, errFunc - 1);
-                
-#if THREAD_SAFE || HOTFIX_ENABLE
-            }
-#endif
-		}
-        
-		public void __Gen_Delegate_Imp30(bool p0, bool p1, int p2)
+		public void __Gen_Delegate_Imp28(bool p0, bool p1, int p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -707,7 +662,7 @@ namespace XLua
 #endif
 		}
         
-		public char __Gen_Delegate_Imp31(string p0, int p1, char p2)
+		public char __Gen_Delegate_Imp29(string p0, int p1, char p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -731,7 +686,7 @@ namespace XLua
 #endif
 		}
         
-		public float __Gen_Delegate_Imp32(UnityEngine.UI.ILayoutElement p0)
+		public float __Gen_Delegate_Imp30(UnityEngine.UI.ILayoutElement p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -753,7 +708,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp33(System.IAsyncResult p0)
+		public void __Gen_Delegate_Imp31(System.IAsyncResult p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -775,7 +730,7 @@ namespace XLua
 #endif
 		}
         
-		public LitJson.IJsonWrapper __Gen_Delegate_Imp34()
+		public LitJson.IJsonWrapper __Gen_Delegate_Imp32()
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -796,7 +751,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp35(object p0)
+		public void __Gen_Delegate_Imp33(object p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -818,7 +773,7 @@ namespace XLua
 #endif
 		}
         
-		public int __Gen_Delegate_Imp36(object p0, int p1, int p2)
+		public int __Gen_Delegate_Imp34(object p0, int p1, int p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -842,7 +797,7 @@ namespace XLua
 #endif
 		}
         
-		public UnityEngine.Vector3 __Gen_Delegate_Imp37(object p0, UnityEngine.Vector3 p1, UnityEngine.Vector3 p2)
+		public UnityEngine.Vector3 __Gen_Delegate_Imp35(object p0, UnityEngine.Vector3 p1, UnityEngine.Vector3 p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -866,7 +821,7 @@ namespace XLua
 #endif
 		}
         
-		public int __Gen_Delegate_Imp38(object p0, int p1, out double p2, ref string p3)
+		public int __Gen_Delegate_Imp36(object p0, int p1, out double p2, ref string p3)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -892,7 +847,7 @@ namespace XLua
 #endif
 		}
         
-		public int __Gen_Delegate_Imp39(object p0, int p1, out double p2, ref string p3, object p4)
+		public int __Gen_Delegate_Imp37(object p0, int p1, out double p2, ref string p3, object p4)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -919,7 +874,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp40(object p0, int p1)
+		public void __Gen_Delegate_Imp38(object p0, int p1)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -942,7 +897,7 @@ namespace XLua
 #endif
 		}
         
-		public string __Gen_Delegate_Imp41(object p0)
+		public string __Gen_Delegate_Imp39(object p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -964,7 +919,7 @@ namespace XLua
 #endif
 		}
         
-		public UnityEngine.GameObject __Gen_Delegate_Imp42(XLuaTest.StructTest p0, int p1, object p2)
+		public UnityEngine.GameObject __Gen_Delegate_Imp40(XLuaTest.StructTest p0, int p1, object p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -988,7 +943,7 @@ namespace XLua
 #endif
 		}
         
-		public string __Gen_Delegate_Imp43(XLuaTest.StructTest p0)
+		public string __Gen_Delegate_Imp41(XLuaTest.StructTest p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1010,7 +965,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp44(XLuaTest.StructTest p0, object p1)
+		public void __Gen_Delegate_Imp42(XLuaTest.StructTest p0, object p1)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1033,7 +988,7 @@ namespace XLua
 #endif
 		}
         
-		public int __Gen_Delegate_Imp45(object p0)
+		public int __Gen_Delegate_Imp43(object p0)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1055,7 +1010,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp46(object p0, object p1)
+		public void __Gen_Delegate_Imp44(object p0, object p1)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1078,7 +1033,7 @@ namespace XLua
 #endif
 		}
         
-		public int __Gen_Delegate_Imp47(object p0, object p1)
+		public int __Gen_Delegate_Imp45(object p0, object p1)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1101,7 +1056,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp48(object p0, object p1, int p2)
+		public void __Gen_Delegate_Imp46(object p0, object p1, int p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1125,7 +1080,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp49(int p0, int p1)
+		public void __Gen_Delegate_Imp47(int p0, int p1)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1148,7 +1103,7 @@ namespace XLua
 #endif
 		}
         
-		public void __Gen_Delegate_Imp50(object p0, int p1, int p2)
+		public void __Gen_Delegate_Imp48(object p0, int p1, int p2)
 		{
 #if THREAD_SAFE || HOTFIX_ENABLE
             lock (luaEnv.luaEnvLock)
@@ -1204,11 +1159,6 @@ namespace XLua
 		    if (type == typeof(UnityEngine.Font.FontTextureRebuildCallback))
 			{
 			    return new UnityEngine.Font.FontTextureRebuildCallback(__Gen_Delegate_Imp0);
-			}
-		
-		    if (type == typeof(UnityEngine.CanvasRenderer.OnRequestRebuild))
-			{
-			    return new UnityEngine.CanvasRenderer.OnRequestRebuild(__Gen_Delegate_Imp0);
 			}
 		
 		    if (type == typeof(UnityEngine.Canvas.WillRenderCanvases))
@@ -1269,11 +1219,6 @@ namespace XLua
 		    if (type == typeof(System.Action<bool>))
 			{
 			    return new System.Action<bool>(__Gen_Delegate_Imp10);
-			}
-		
-		    if (type == typeof(UnityEngine.AudioSettings.AudioConfigurationChangeHandler))
-			{
-			    return new UnityEngine.AudioSettings.AudioConfigurationChangeHandler(__Gen_Delegate_Imp10);
 			}
 		
 		    if (type == typeof(Performance.LuaCallPerfCase))
@@ -1351,54 +1296,44 @@ namespace XLua
 			    return new System.Action<UnityEngine.Cubemap>(__Gen_Delegate_Imp24);
 			}
 		
-		    if (type == typeof(System.Action<UnityEngine.CustomRenderTexture>))
-			{
-			    return new System.Action<UnityEngine.CustomRenderTexture>(__Gen_Delegate_Imp25);
-			}
-		
-		    if (type == typeof(System.Action<UnityEngine.CustomRenderTexture, int>))
-			{
-			    return new System.Action<UnityEngine.CustomRenderTexture, int>(__Gen_Delegate_Imp26);
-			}
-		
 		    if (type == typeof(System.Action<UnityEngine.AsyncOperation>))
 			{
-			    return new System.Action<UnityEngine.AsyncOperation>(__Gen_Delegate_Imp27);
+			    return new System.Action<UnityEngine.AsyncOperation>(__Gen_Delegate_Imp25);
 			}
 		
 		    if (type == typeof(UnityEngine.RectTransform.ReapplyDrivenProperties))
 			{
-			    return new UnityEngine.RectTransform.ReapplyDrivenProperties(__Gen_Delegate_Imp28);
+			    return new UnityEngine.RectTransform.ReapplyDrivenProperties(__Gen_Delegate_Imp26);
 			}
 		
 		    if (type == typeof(System.Action<UnityEngine.Font>))
 			{
-			    return new System.Action<UnityEngine.Font>(__Gen_Delegate_Imp29);
+			    return new System.Action<UnityEngine.Font>(__Gen_Delegate_Imp27);
 			}
 		
 		    if (type == typeof(System.Action<bool, bool, int>))
 			{
-			    return new System.Action<bool, bool, int>(__Gen_Delegate_Imp30);
+			    return new System.Action<bool, bool, int>(__Gen_Delegate_Imp28);
 			}
 		
 		    if (type == typeof(UnityEngine.UI.InputField.OnValidateInput))
 			{
-			    return new UnityEngine.UI.InputField.OnValidateInput(__Gen_Delegate_Imp31);
+			    return new UnityEngine.UI.InputField.OnValidateInput(__Gen_Delegate_Imp29);
 			}
 		
 		    if (type == typeof(System.Func<UnityEngine.UI.ILayoutElement, float>))
 			{
-			    return new System.Func<UnityEngine.UI.ILayoutElement, float>(__Gen_Delegate_Imp32);
+			    return new System.Func<UnityEngine.UI.ILayoutElement, float>(__Gen_Delegate_Imp30);
 			}
 		
 		    if (type == typeof(System.AsyncCallback))
 			{
-			    return new System.AsyncCallback(__Gen_Delegate_Imp33);
+			    return new System.AsyncCallback(__Gen_Delegate_Imp31);
 			}
 		
 		    if (type == typeof(LitJson.WrapperFactory))
 			{
-			    return new LitJson.WrapperFactory(__Gen_Delegate_Imp34);
+			    return new LitJson.WrapperFactory(__Gen_Delegate_Imp32);
 			}
 		
 		    return null;

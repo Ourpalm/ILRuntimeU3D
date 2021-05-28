@@ -42,8 +42,8 @@ public static class ExampleConfig
         "RemoteNotificationType", "RemoteNotification",
         "SamsungTV", "TextureCompressionQuality",
         "TouchScreenKeyboardType", "TouchScreenKeyboard",
-        "MovieTexture", "UnityEngineInternal",
-        "Terrain", "Tree", "SplatPrototype",
+        "MovieTexture", "UnityEngineInternal","UnityEngine.MeshRenderer",
+        "Terrain", "Tree", "SplatPrototype","LightingSettings","DefaultControls","Graphic","Texture","Light","Text","ParticleSystem",
         "DetailPrototype", "DetailRenderMode",
         "MeshSubsetCombineUtility", "AOT", "Social", "Enumerator",
         "SendMouseEvents", "Cursor", "Flash", "ActionScript",
@@ -51,7 +51,7 @@ public static class ExampleConfig
         "ShaderVariantCollection", "SimpleJson.Reflection",
         "CoroutineTween", "GraphicRebuildTracker",
         "Advertisements", "UnityEditor", "WSA",
-        "EventProvider", "Apple",
+        "EventProvider", "Apple","CanvasRenderer","AnimatorControllerParameter","AudioSettings","Caching","DrivenRect","LightProbeGroup",
         "ClusterInput", "Motion",
         "UnityEngine.UI.ReflectionMethodsCache", "NativeLeakDetection",
         "NativeLeakDetectionMode", "WWWAudioExtensions", "UnityEngine.Experimental",
@@ -262,6 +262,7 @@ public static class ExampleConfig
                 new List<string>(){"UnityEngine.WWW", "MovieTexture"},
                 new List<string>(){"UnityEngine.WWW", "GetMovieTexture"},
                 new List<string>(){"UnityEngine.AnimatorOverrideController", "PerformOverrideClipListCleanup"},
+                new List<string>(){"UnityEngine.Input", "IsJoystickPreconfigured" },
     #if !UNITY_WEBPLAYER
                 new List<string>(){"UnityEngine.Application", "ExternalEval"},
     #endif
