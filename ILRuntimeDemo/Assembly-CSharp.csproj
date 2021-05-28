@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\Bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_2021_1_7;UNITY_2021_1;UNITY_2021;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;USE_SEARCH_ENGINE_API;USE_QUICK_SEARCH_MODULE;SCENE_TEMPLATE_MODULE;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_4_6;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_2021_1_7;UNITY_2021_1;UNITY_2021;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_INCLUDE_TESTS;USE_SEARCH_ENGINE_API;USE_QUICK_SEARCH_MODULE;SCENE_TEMPLATE_MODULE;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_RUNTIME_PERMISSIONS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;ENABLE_VIDEO;PLATFORM_ANDROID;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;UNITY_CAN_SHOW_SPLASH_SCREEN;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO;ENABLE_SPATIALTRACKING;ENABLE_ETC_COMPRESSION;PLATFORM_EXTENDS_VULKAN_DEVICE;PLATFORM_HAS_MULTIPLE_SWAPCHAINS;UNITY_ANDROID_SUPPORTS_SHADOWFILES;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_4_6;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -49,7 +49,7 @@
     <UnityProjectGenerator>Package</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>2.0.7</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
-    <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
+    <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>2021.1.7f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -60,6 +60,7 @@
     <Compile Include="Assets\XLua\Src\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_MeshWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_MatchTargetWeightMaskWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Type_Binding.cs" />
     <Compile Include="Assets\XLua\Src\LuaTable.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_GameObjectWrap.cs" />
     <Compile Include="Assets\XLua\Examples\01_Helloworld\Helloworld.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_ConstantForceWrap.cs" />
     <Compile Include="Assets\XLua\Tutorial\LoadLuaScript\ByFile\ByFile.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PhysicsJobOptions2DWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\System_Text_StringBuilderWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_JsonUtilityWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_DebugWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_WheelJoint2DWrap.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\Scripts\Examples\12_Performance\Performance.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_SpriteWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_TrailRendererWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Transform_Binding.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_HashUnsafeUtilitiesWrap.cs" />
     <Compile Include="Assets\XLua\Src\Utils.cs" />
     <Compile Include="Assets\XLua\Gen\PerformanceWrap.cs" />
@@ -121,8 +124,8 @@
     <Compile Include="Assets\Samples\ILRuntime\1.6.7\Demo\LitJson\JsonMapper.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_RandomWrap.cs" />
     <Compile Include="Assets\Samples\ILRuntime\Generated\CoroutineDemo_Binding.cs" />
-    <Compile Include="Assets\XLua\Gen\UnityEngine_RelativeJoint2DWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_CombineInstanceWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\UnityEngine_RelativeJoint2DWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ResourcesAPIWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PointEffector2DWrap.cs" />
     <Compile Include="Assets\XLua\Examples\09_GenericMethod\Foo.cs" />
@@ -195,6 +198,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_BuildCompressionWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_LocationInfoWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_SpriteMaskWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Input_Binding.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_ButtonWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PhysicsSceneExtensionsWrap.cs" />
     <Compile Include="Assets\XLua\Gen\CLRBindingTestClassWrap.cs" />
@@ -261,6 +265,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_ImageWrap.cs" />
     <Compile Include="Assets\XLua\Examples\02_U3DScripting\LuaBehaviour.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ImageEffectTransformsToLDRWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Int64_Binding.cs" />
     <Compile Include="Assets\XLua\Src\LuaBase.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AvatarMaskWrap.cs" />
     <Compile Include="Assets\XLua\Examples\10_SignatureLoader\SignatureLoaderTest.cs" />
@@ -304,6 +309,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_BoneWeight1Wrap.cs" />
     <Compile Include="Assets\Samples\ILRuntime\Generated\System_Object_Binding.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_AspectRatioFitterWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Renderer_Binding.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_LayoutRebuilderWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_MissingComponentExceptionWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioChorusFilterWrap.cs" />
@@ -314,6 +320,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_PhysicsScene2DWrap.cs" />
     <Compile Include="Assets\XLua\Gen\XLuaTest_FooWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_SkeletonBoneWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Object_Binding.cs" />
     <Compile Include="Assets\XLua\Examples\04_LuaObjectOrented\InvokeLua.cs" />
     <Compile Include="Assets\XLua\Gen\System_ObjectWrap.cs" />
     <Compile Include="Assets\XLua\Gen\TestClassBaseWrap.cs" />
@@ -371,8 +378,8 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_CapsuleCollider2DWrap.cs" />
     <Compile Include="Assets\XLua\Src\SignatureLoader.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_GridLayoutWrap.cs" />
-    <Compile Include="Assets\XLua\Gen\UnityEngine_AudioDistortionFilterWrap.cs" />
     <Compile Include="Assets\XLua\Gen\InheritanceWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\UnityEngine_AudioDistortionFilterWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_BillboardRendererWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_LineRendererWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PlayerPrefsExceptionWrap.cs" />
@@ -424,7 +431,6 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioSourceWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_StencilMaterialWrap.cs" />
     <Compile Include="Assets\XLua\Src\LuaEnv.cs" />
-    <Compile Include="Assets\XLua\Gen\UnityEngine_ClusterSerializationWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_SurfaceEffector2DWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ContactPointWrap.cs" />
     <Compile Include="Assets\Samples\ILRuntime\Generated\CLRBindingTestClass_Binding.cs" />
@@ -579,13 +585,6 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_Vector2IntWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioReverbFilterWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_WaitUntilWrap.cs" />
-    <Compile Include="Assets\XLua\Gen\System_Text_StringBuilderWrap.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Transform_Binding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Int64_Binding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Object_Binding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Renderer_Binding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Input_Binding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Type_Binding.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\XLua\Gen\link.xml" />
@@ -632,12 +631,6 @@
     </Reference>
     <Reference Include="UnityEngine.ClothModule">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.ClothModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ClusterInputModule">
-      <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.ClusterInputModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ClusterRendererModule">
-      <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.ClusterRendererModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
@@ -791,9 +784,6 @@
     </Reference>
     <Reference Include="UnityEngine.VideoModule">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.VideoModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.VirtualTexturingModule">
-      <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.VirtualTexturingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.WindModule">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.WindModule.dll</HintPath>
