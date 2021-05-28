@@ -580,6 +580,12 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioReverbFilterWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_WaitUntilWrap.cs" />
     <Compile Include="Assets\XLua\Gen\System_Text_StringBuilderWrap.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Transform_Binding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Int64_Binding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Object_Binding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Renderer_Binding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\UnityEngine_Input_Binding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\Generated\System_Type_Binding.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\XLua\Gen\link.xml" />
@@ -597,6 +603,7 @@
      <None Include="Assets\StreamingAssets\HotFix_Project.dll" />
      <None Include="Assets\XLua\Resources\tdr\tdr.lua.txt" />
      <None Include="Assets\XLua\CHANGELOG.txt" />
+     <None Include="Assets\StreamingAssets\UnityEngine.InputLegacyModule.dll" />
      <None Include="Assets\XLua\Examples\06_Coroutine\Resources\cs_coroutine.lua.txt" />
      <None Include="Assets\link.xml" />
     <Reference Include="UnityEngine">

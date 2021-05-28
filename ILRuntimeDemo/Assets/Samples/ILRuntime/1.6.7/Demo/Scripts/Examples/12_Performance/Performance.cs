@@ -156,6 +156,9 @@ public class Performance : MonoBehaviour
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 #endif  
+        appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
+        appdomain.RegisterValueTypeBinder(typeof(Quaternion), new QuaternionBinder());
+        appdomain.RegisterValueTypeBinder(typeof(Vector2), new Vector2Binder());
         ILRuntime.Runtime.CLRBinding.CLRBindingUtils.Initialize(appdomain);
     }
 
@@ -204,7 +207,7 @@ public class Performance : MonoBehaviour
         return ((workX * workX) + (workY * workY)) < 4.0f;
     }
 
-    public static void TestFunc1(int a, string b, Vector3 c, Transform d)
+    public static void TestFunc1(int a, string b, Transform d)
     {
         
     }

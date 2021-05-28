@@ -86,6 +86,10 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         method = type.GetMethod("Angle", flag, null, args, null);
         appdomain.RegisterCLRMethodRedirection(method, Quaternion_Angle);
 
+        args = new Type[] { typeof(Quaternion), typeof(Quaternion), typeof(float) };
+        method = type.GetMethod("Slerp", flag, null, args, null);
+        appdomain.RegisterCLRMethodRedirection(method, Quaternion_Slerp);
+
         args = new Type[] { typeof(Vector3) };
         method = type.GetMethod("Euler", flag, null, args, null);
         appdomain.RegisterCLRMethodRedirection(method, Quaternion_Euler);
@@ -241,6 +245,26 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         var res = Quaternion.Euler(x, y, z);
 
         PushQuaternion(ref res, intp, ptr, mStack);
+        return ret + 1;
+    }
+
+    StackObject* Quaternion_Slerp(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    {
+        var ret = ILIntepreter.Minus(esp, 3);
+        Quaternion left, right;
+
+        var ptr = ILIntepreter.Minus(esp, 1);
+        float t = *(float*)&ptr->Value;
+
+        ptr = ILIntepreter.Minus(esp, 2);
+        ParseQuaternion(out right, intp, ptr, mStack);
+
+        ptr = ILIntepreter.Minus(esp, 3);
+        ParseQuaternion(out left, intp, ptr, mStack);
+
+        var res = Quaternion.Slerp(left, right, t);
+        PushQuaternion(ref res, intp, ret, mStack);
+
         return ret + 1;
     }
 

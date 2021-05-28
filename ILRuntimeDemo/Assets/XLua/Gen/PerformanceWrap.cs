@@ -236,10 +236,9 @@ namespace XLua.CSObjectWrap
                 {
                     int _a = LuaAPI.xlua_tointeger(L, 1);
                     string _b = LuaAPI.lua_tostring(L, 2);
-                    UnityEngine.Vector3 _c;translator.Get(L, 3, out _c);
-                    UnityEngine.Transform _d = (UnityEngine.Transform)translator.GetObject(L, 4, typeof(UnityEngine.Transform));
+                    UnityEngine.Transform _d = (UnityEngine.Transform)translator.GetObject(L, 3, typeof(UnityEngine.Transform));
                     
-                    Performance.TestFunc1( _a, _b, _c, _d );
+                    Performance.TestFunc1( _a, _b, _d );
                     
                     
                     

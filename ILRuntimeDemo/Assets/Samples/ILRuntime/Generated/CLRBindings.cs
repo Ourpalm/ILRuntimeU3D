@@ -17,6 +17,8 @@ namespace ILRuntime.Runtime.Generated
         }
 
         internal static ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Vector3> s_UnityEngine_Vector3_Binding_Binder = null;
+        internal static ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Vector2> s_UnityEngine_Vector2_Binding_Binder = null;
+        internal static ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Quaternion> s_UnityEngine_Quaternion_Binding_Binder = null;
 
         /// <summary>
         /// Initialize the CLR binding, please invoke this AFTER CLR Redirection registration
@@ -29,18 +31,24 @@ namespace ILRuntime.Runtime.Generated
             LitJson_JsonMapper_Binding.Register(app);
             UnityEngine_Debug_Binding.Register(app);
             System_Diagnostics_Stopwatch_Binding.Register(app);
-            System_Int32_Binding.Register(app);
+            System_Single_Binding.Register(app);
             System_String_Binding.Register(app);
             System_Text_StringBuilder_Binding.Register(app);
-            System_Single_Binding.Register(app);
             Performance_Binding.Register(app);
+            UnityEngine_GameObject_Binding.Register(app);
+            UnityEngine_Transform_Binding.Register(app);
+            UnityEngine_Object_Binding.Register(app);
+            System_Int64_Binding.Register(app);
             UnityEngine_Vector3_Binding.Register(app);
+            System_Type_Binding.Register(app);
+            UnityEngine_Renderer_Binding.Register(app);
+            UnityEngine_Input_Binding.Register(app);
+            UnityEngine_Quaternion_Binding.Register(app);
+            System_Int32_Binding.Register(app);
             System_Object_Binding.Register(app);
             System_Boolean_Binding.Register(app);
-            UnityEngine_Quaternion_Binding.Register(app);
             UnityEngine_Vector2_Binding.Register(app);
             UnityEngine_Time_Binding.Register(app);
-            UnityEngine_GameObject_Binding.Register(app);
             CoroutineDemo_Binding.Register(app);
             UnityEngine_WaitForSeconds_Binding.Register(app);
             System_NotSupportedException_Binding.Register(app);
@@ -55,6 +63,10 @@ namespace ILRuntime.Runtime.Generated
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
             __clrType = (ILRuntime.CLR.TypeSystem.CLRType)app.GetType (typeof(UnityEngine.Vector3));
             s_UnityEngine_Vector3_Binding_Binder = __clrType.ValueTypeBinder as ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Vector3>;
+            __clrType = (ILRuntime.CLR.TypeSystem.CLRType)app.GetType (typeof(UnityEngine.Vector2));
+            s_UnityEngine_Vector2_Binding_Binder = __clrType.ValueTypeBinder as ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Vector2>;
+            __clrType = (ILRuntime.CLR.TypeSystem.CLRType)app.GetType (typeof(UnityEngine.Quaternion));
+            s_UnityEngine_Quaternion_Binding_Binder = __clrType.ValueTypeBinder as ILRuntime.Runtime.Enviorment.ValueTypeBinder<UnityEngine.Quaternion>;
         }
 
         /// <summary>
@@ -63,6 +75,8 @@ namespace ILRuntime.Runtime.Generated
         public static void Shutdown(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             s_UnityEngine_Vector3_Binding_Binder = null;
+            s_UnityEngine_Vector2_Binding_Binder = null;
+            s_UnityEngine_Quaternion_Binding_Binder = null;
         }
     }
 }

@@ -175,7 +175,7 @@ function Test10(sb)
 	local transform = go.transform
 	
 	for i = 1, 2000000 do
-		CS.Performance.TestFunc1(1, "123", transform.position, transform)
+		CS.Performance.TestFunc1(1, "123", transform)
 	end
 	
 	GameObject.Destroy(go)

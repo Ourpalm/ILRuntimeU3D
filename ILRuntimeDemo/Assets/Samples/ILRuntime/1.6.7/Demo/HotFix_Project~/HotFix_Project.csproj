@@ -47,6 +47,10 @@
       <HintPath>UnityDlls\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>UnityDlls\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>UnityDlls\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
