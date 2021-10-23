@@ -666,7 +666,11 @@ namespace ILRuntime.Runtime.Intepreter
                             ILEnumTypeInstance enum2 = (ILEnumTypeInstance)obj;
                             if (enum1.type == enum2.type)
                             {
-                                var res = enum1.fields[0] == enum2.fields[0];
+                                bool res;
+                                if (enum1.fields[0].ObjectType == ObjectTypes.Integer)
+                                    res = enum1.fields[0].Value == enum2.fields[0].Value;
+                                else
+                                    res = enum1.fields[0] == enum2.fields[0];
                                 return res;
                             }
                             else
@@ -729,7 +733,7 @@ namespace ILRuntime.Runtime.Intepreter
         internal IDelegateAdapter GetDelegateAdapter(ILMethod method)
         {
             if (delegates == null)
-                delegates = new Dictionary<ILMethod, IDelegateAdapter>();
+                return null;
 
             IDelegateAdapter res;
             if (delegates.TryGetValue(method, out res))
@@ -739,6 +743,9 @@ namespace ILRuntime.Runtime.Intepreter
 
         internal void SetDelegateAdapter(ILMethod method, IDelegateAdapter adapter)
         {
+            if (delegates == null)
+                delegates = new Dictionary<ILMethod, IDelegateAdapter>();
+
             if (!delegates.ContainsKey(method))
                 delegates[method] = adapter;
             else
