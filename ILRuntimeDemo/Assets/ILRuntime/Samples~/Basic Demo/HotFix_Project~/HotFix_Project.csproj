@@ -47,6 +47,10 @@
       <HintPath>UnityDlls\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>UnityDlls\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>UnityDlls\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
@@ -54,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestJson.cs" />
+    <Compile Include="TestPerformance.cs" />
     <Compile Include="TestValueType.cs" />
     <Compile Include="TestMonoBehaviour.cs" />
     <Compile Include="TestCoroutine.cs" />
