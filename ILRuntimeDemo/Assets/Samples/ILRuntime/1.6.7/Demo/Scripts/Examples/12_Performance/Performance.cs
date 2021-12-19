@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//#define XLUA_INSTALLED
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,10 +8,15 @@ using System.Text;
 using UnityEngine.UI;
 using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
+#if XLUA_INSTALLED
 using XLua;
 //下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
 #pragma warning disable CS0618
 [LuaCallCSharp]
+#else
+//下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
+#pragma warning disable CS0618
+#endif
 
 public class Performance : MonoBehaviour
 {
@@ -26,12 +32,13 @@ public class Performance : MonoBehaviour
 
     System.IO.MemoryStream fs;
     System.IO.MemoryStream p;
+#if XLUA_INSTALLED
     LuaEnv luaenv = null;
-
-    List<string> tests = new List<string>();
-
     [XLua.CSharpCallLua]
     public delegate void LuaCallPerfCase(StringBuilder sb);
+#endif
+    List<string> tests = new List<string>();
+
     private void Awake()
     {
         tests.Add("TestMandelbrot");
@@ -67,13 +74,18 @@ public class Performance : MonoBehaviour
         btn.onClick.AddListener(() =>
         {
             StringBuilder sb = new StringBuilder();
+#if UNITY_EDITOR || DEBUG
+            sb.AppendLine("请打包工程至非Development Build，并安装到真机再测试，编辑器中性能差异巨大，当前测试结果不具备测试意义");
+#endif
+#if XLUA_INSTALLED
             if (luaenv != null)
             {
                 var perf = luaenv.Global.GetInPath<LuaCallPerfCase>(testName);
                 perf(sb);
             }
             else
-                appdomain.Invoke("HotFix_Project.TestPerformance", testName, null, sb);
+#endif
+            appdomain.Invoke("HotFix_Project.TestPerformance", testName, null, sb);
             lbResult.text = sb.ToString();
         });
     }
@@ -95,9 +107,14 @@ public class Performance : MonoBehaviour
 
     public void LoadLua()
     {
+#if XLUA_INSTALLED
         string luaStr = @"require 'performance'";
         luaenv = new LuaEnv();
         luaenv.DoString(luaStr);
+#else
+        lbResult.text = "请自行安装XLua并生成xlua绑定代码，将performance.lua复制到StreamingAssets后，解除Performace.cs第一行注释";
+        Debug.LogError("请自行安装XLua并生成xlua绑定代码后，将performance.lua复制到StreamingAssets后，解除Performace.cs第一行注释");
+#endif
         OnHotFixLoaded();
     }
 
@@ -155,7 +172,7 @@ public class Performance : MonoBehaviour
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
-#endif  
+#endif
         appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
         appdomain.RegisterValueTypeBinder(typeof(Quaternion), new QuaternionBinder());
         appdomain.RegisterValueTypeBinder(typeof(Vector2), new Vector2Binder());
@@ -178,9 +195,11 @@ public class Performance : MonoBehaviour
         fs = null;
         p = null;
         appdomain = null;
+#if XLUA_INSTALLED
         if (luaenv != null)
             luaenv.Dispose();
         luaenv = null;
+#endif
         btnUnload.interactable = false;
         btnLoadRegister.interactable = true;
         btnLoadStack.interactable = true;

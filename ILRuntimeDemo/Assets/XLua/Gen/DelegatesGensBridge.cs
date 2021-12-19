@@ -1221,10 +1221,10 @@ namespace XLua
 			    return new System.Action<bool>(__Gen_Delegate_Imp10);
 			}
 		
-		    if (type == typeof(Performance.LuaCallPerfCase))
+		    /*if (type == typeof(Performance.LuaCallPerfCase))
 			{
 			    return new Performance.LuaCallPerfCase(__Gen_Delegate_Imp11);
-			}
+			}*/
 		
 		    if (type == typeof(Tutorial.CSCallLua.FDelegate))
 			{
