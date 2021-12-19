@@ -178,10 +178,13 @@ namespace ILRuntime.Reflection
         {
             get
             {
-                return method.ReturnType?.ReflectionType;
+                if (method.ReturnType != null)
+                    return method.ReturnType.ReflectionType;
+                else
+                    return null;
             }
         }
-
+#if NET_4_6 || NET_STANDARD_2_0
         public override Delegate CreateDelegate(Type delegateType)
         {
             throw new NotSupportedException("please use CreateDelegate(Type delegateType, object target)");
@@ -216,5 +219,6 @@ namespace ILRuntime.Reflection
             }
             return del.GetConvertor(delegateType);
         }
+#endif
     }
 }
