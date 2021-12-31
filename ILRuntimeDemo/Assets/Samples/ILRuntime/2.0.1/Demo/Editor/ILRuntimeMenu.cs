@@ -24,5 +24,11 @@ public class ILRuntimeMenu
     {
         Application.OpenURL("https://github.com/Ourpalm/ILRuntime");
     }
+
+    [MenuItem("ILRuntime/打开ILRuntime视频教程")]
+    static void OpenTutorial()
+    {
+        Application.OpenURL("https://learn.u3d.cn/tutorial/ilruntime");
+    }
 }
 #endif
