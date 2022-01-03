@@ -184,6 +184,7 @@ namespace ILRuntime.Reflection
                     return null;
             }
         }
+
 #if NET_4_6 || NET_STANDARD_2_0
         public override Delegate CreateDelegate(Type delegateType)
         {

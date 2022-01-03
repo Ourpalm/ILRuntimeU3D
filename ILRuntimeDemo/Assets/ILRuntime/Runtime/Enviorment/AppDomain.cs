@@ -801,7 +801,7 @@ namespace ILRuntime.Runtime.Enviorment
                     UnityEngine.Debug.Log("CLRBindingUtils.Initialize Done in thread..");
 #endif
                 });
-                 thread.Name = string.Format("CLRBindings-Thread #{0}",thread.ManagedThreadId);
+                thread.Name = string.Format("CLRBindings-Thread #{0}",thread.ManagedThreadId);
                 thread.Start();
             }
             else

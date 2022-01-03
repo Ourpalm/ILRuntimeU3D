@@ -149,6 +149,7 @@ namespace ILRuntime.Reflection
             }
         }
 
+
         public override Type DeclaringType
         {
             get
