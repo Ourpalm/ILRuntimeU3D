@@ -4,7 +4,55 @@ end
 local GameObject = CS.UnityEngine.GameObject
 local Vector3 = CS.UnityEngine.Vector3
 local Quaternion = CS.UnityEngine.Quaternion
+local CSMandelbrotCheck = CS.Performance.MandelbrotCheck
+
 function TestMandelbrot(sb)
+	TestMandelbrot1(sb)
+	TestMandelbrot2(sb)
+end
+
+function TestMandelbrot1(sb)
+	local data = 0.0
+	local iterations = 4
+	local width = 64
+	local height = 64
+	local _os_t = os.clock
+	local _ct = _os_t()
+	for i = 1, iterations do
+		local left = -2.1
+		local right = 1.0
+		local top = -1.3
+		local bottom = 1.3
+		local deltaX = (right - left) / width
+		local deltaY = (bottom - top) / height
+		local coordinateX = left
+		for x = 1, width do
+			local coordinateY = top
+			for y = 1, height do
+				local workX = 0
+				local workY = 0
+				local counter = 0
+				while(counter < 255 and MandelbrotCheck(workX, workY))
+				--while(counter < 255 and CSMandelbrotCheck(workX, workY))				
+				do
+					counter = counter + 1
+					local newX = (workX * workX) - (workY * workY) + coordinateX
+					workY = 2 * workX * workY + coordinateY
+                    workX = newX;
+				end
+				
+				data = workX + workY
+                coordinateY = coordinateY + deltaY
+			end
+			coordinateX = coordinateX + deltaX
+		end
+	end
+	local _d =  _os_t()  - _ct
+	sb:AppendLine("lua use self res="..data..", time:".._d*1000);
+end
+
+
+function TestMandelbrot2(sb)
 	local data = 0.0
 	local iterations = 4
 	local width = 64
@@ -26,7 +74,7 @@ function TestMandelbrot(sb)
 				local workY = 0
 				local counter = 0
 				--while(counter < 255 and MandelbrotCheck(workX, workY))
-				while(counter < 255 and CS.Performance.MandelbrotCheck(workX, workY))				
+				while(counter < 255 and CSMandelbrotCheck(workX, workY))				
 				do
 					counter = counter + 1
 					local newX = (workX * workX) - (workY * workY) + coordinateX
@@ -41,16 +89,19 @@ function TestMandelbrot(sb)
 		end
 	end
 	local _d =  _os_t()  - _ct
-	sb:AppendLine("res="..data..", time:".._d*1000);
+	sb:AppendLine("lua use C# res="..data..", time:".._d*1000);
 end
 
 function Test0(sb)
 	local t = os.clock()
 	local go = GameObject("t")
 	local transform = go.transform
-	
+	local x,y,z = 1
+
 	for i = 1, 2000000 do
-		transform.position = transform.position
+		x,y,z = transform:GetPosition(x,y,z)
+		transform:SetPosition(x,y,z)
+		--transform.position = transform.position
 	end
 	GameObject.Destroy(go)
 	sb:AppendLine("time="..(os.clock()-t)*1000)
@@ -62,7 +113,8 @@ function Test1(sb)
 	local transform = go.transform
 	
 	for i = 1, 2000000 do
-		transform:Rotate(Vector3.up, 1)
+		transform:Rotation(0, 1, 0, 1)
+		--transform:Rotate(Vector3.up, 1)
 	end
 	
 	GameObject.Destroy(go)

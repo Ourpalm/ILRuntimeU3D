@@ -13,11 +13,11 @@ namespace HotFix_Project
             sw.Start();
             float total = Mandelbrot(64, 64, 4);
             sw.Stop();
-            sb.AppendLine(string.Format("res=" + total + ", time:{0:0}", sw.ElapsedMilliseconds));
+            sb.AppendLine(string.Format("ilruntime: use self res=" + total + ", time:{0:0}", sw.ElapsedMilliseconds));
             sw.Restart();
             total = Mandelbrot2(64, 64, 4);
             sw.Stop();
-            sb.AppendLine(string.Format("res2=" + total + ", time:{0:0}", sw.ElapsedMilliseconds));
+            sb.AppendLine(string.Format("ilruntime: use C# res2=" + total + ", time:{0:0}", sw.ElapsedMilliseconds));
         }
 
         static bool MandelbrotCheck(float workX, float workY)
