@@ -184,6 +184,8 @@ namespace ILRuntime.Runtime.Enviorment
             }
             mi = typeof(System.Type).GetMethod("GetTypeFromHandle");
             RegisterCLRMethodRedirection(mi, CLRRedirections.GetTypeFromHandle);
+            mi = typeof(System.Type).GetMethod("MakeGenericType");
+            RegisterCLRMethodRedirection(mi, CLRRedirections.TypeMakeGenericType);
             mi = typeof(object).GetMethod("GetType");
             RegisterCLRMethodRedirection(mi, CLRRedirections.ObjectGetType);
             mi = typeof(Delegate).GetMethod("CreateDelegate", new Type[] { typeof(Type), typeof(MethodInfo) });
@@ -192,6 +194,8 @@ namespace ILRuntime.Runtime.Enviorment
             RegisterCLRMethodRedirection(mi, CLRRedirections.DelegateCreateDelegate2);
             mi = typeof(Delegate).GetMethod("CreateDelegate", new Type[] { typeof(Type), typeof(object), typeof(MethodInfo) });
             RegisterCLRMethodRedirection(mi, CLRRedirections.DelegateCreateDelegate3);
+            mi = typeof(Delegate).GetMethod("get_Target");
+            RegisterCLRMethodRedirection(mi, CLRRedirections.DelegateGetTarget);
             dMgr = new DelegateManager(this);
             dMgr.RegisterDelegateConvertor<Action>((dele) =>
             {
@@ -1340,6 +1344,11 @@ namespace ILRuntime.Runtime.Enviorment
             IType t = GetType(type);
             if (t == null || t is CLRType)
                 return;
+            ILType ilType = (ILType)t;
+            foreach(var i in ilType.TypeDefinition.NestedTypes)
+            {
+                Prewarm(i.FullName, recursive);
+            }
             var methods = t.GetMethods();
             foreach (var i in methods)
             {

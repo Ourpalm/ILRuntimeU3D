@@ -53,9 +53,6 @@
     <UnityVersion>2021.1.7f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\DebugService.cs" />
     <Compile Include="Assets\ILRuntime\Reflection\ILRuntimeFieldInfo.cs" />
     <Compile Include="Assets\ILRuntime\Reflection\ILRuntimeType.cs" />
@@ -75,6 +72,7 @@
     <Compile Include="Assets\ILRuntime\Runtime\CLRBinding\CLRBindingUtils.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\DelegateAdapter.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\ILTypeInstance.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Debugger\BreakpointConditionExpressionVisitor.cs.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\CSResolveIndexer.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\OpCodes\OpCode.cs" />
     <Compile Include="Assets\ILRuntime\CLR\Utils\Extensions.cs" />
@@ -83,6 +81,7 @@
     <Compile Include="Assets\ILRuntime\CLR\Method\ExceptionHandler.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.InlineMethod.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\SCModuleLoaded.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Debugger\Expressions\Parser.cs" />
     <Compile Include="Assets\ILRuntime\CLR\TypeSystem\ILGenericParameterType.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\CLRBinding\BindingGeneratorExtensions.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.BCP.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\CSExecute.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\ILRuntimeJITAttribute.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\CSEnumChildren.cs" />
+    <Compile Include="Assets\ILRuntime\CLR\Method\IMethodExtensions.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.Utils.cs" />
     <Compile Include="Assets\ILRuntime\CLR\TypeSystem\CLRType.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\DebugSocket.cs" />
@@ -111,11 +111,13 @@
     <Compile Include="Assets\ILRuntime\Runtime\CLRBinding\ValueTypeBindingGenerator.cs" />
     <Compile Include="Assets\ILRuntime\Other\NeedAdaptorAttribute.cs" />
     <Compile Include="Assets\ILRuntime\CLR\Method\CLRMethod.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Debugger\Expressions\EvalExpression.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\VariableInfo.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\SCStepComplete.cs" />
     <Compile Include="Assets\ILRuntime\Reflection\ILRuntimeParameterInfo.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\BreakPointContext.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Stack\RuntimeStack.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Debugger\Expressions\Lexer.cs" />
     <Compile Include="Assets\ILRuntime\Reflection\ILRuntimeWrapperType.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\CLRBinding\ConstructorBindingGenerator.cs" />
     <Compile Include="Assets\ILRuntime\CLR\Method\ILMethod.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\SCBindBreakpointResult.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Enviorment\CrossBindingAdaptor.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\RegisterVM\Optimizer.RegisterCleanup.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Debugger\Expressions\Token.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\CSDeleteBreakpoint.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\CLRBinding\FieldBindingGenerator.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Enviorment\CrossBindingMethodInfo.cs" />
@@ -382,6 +385,9 @@
     </Reference>
     <Reference Include="UnityEditor.Graphs">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Android.Extensions">
+      <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>E:\Program Files\2021.1.7f1c1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>

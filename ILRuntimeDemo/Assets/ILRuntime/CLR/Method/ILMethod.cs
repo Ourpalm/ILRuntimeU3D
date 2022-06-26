@@ -597,7 +597,10 @@ namespace ILRuntime.CLR.Method
 #endif
             }
             else
+            {
                 body = new OpCode[0];
+                bodyRegister = new OpCodeR[0];
+            }
         }
 
         void InitStackCodeBody(Dictionary<Mono.Cecil.Cil.Instruction, int> addr)
@@ -743,6 +746,7 @@ namespace ILRuntime.CLR.Method
                 case OpCodeEnum.Newarr:
                 case OpCodeEnum.Stobj:
                 case OpCodeEnum.Ldobj:
+                case OpCodeEnum.Castclass:
                     {
                         code.TokenInteger = GetTypeTokenHashCode(token);
                     }
