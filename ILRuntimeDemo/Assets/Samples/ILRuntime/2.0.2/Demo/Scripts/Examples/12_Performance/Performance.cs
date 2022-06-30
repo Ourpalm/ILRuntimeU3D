@@ -1,4 +1,4 @@
-﻿//#define XLUA_INSTALLED
+﻿#define XLUA_INSTALLED
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,12 +12,12 @@ using ILRuntime.Runtime.Enviorment;
 using XLua;
 //下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
 #pragma warning disable CS0618
-[LuaCallCSharp]
 #else
 //下面这行为了取消使用WWW的警告，Unity2018以后推荐使用UnityWebRequest，处于兼容性考虑Demo依然使用WWW
 #pragma warning disable CS0618
 #endif
 
+[LuaCallCSharp]
 public class Performance : MonoBehaviour
 {
     public Button btnLoadStack;
@@ -29,6 +29,7 @@ public class Performance : MonoBehaviour
     //AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个
     //大家在正式项目中请全局只创建一个AppDomain
     AppDomain appdomain;
+    public string useLib = "";
 
     System.IO.MemoryStream fs;
     System.IO.MemoryStream p;
@@ -41,9 +42,9 @@ public class Performance : MonoBehaviour
 
     private void Awake()
     {
-        tests.Add("TestMandelbrot");
-        tests.Add("Test0");
-        tests.Add("Test1");
+        tests.Add("TestMandelbrot float数值计算");
+        tests.Add("Test0 transform set get pos");
+        tests.Add("Test1 transform rotation");
         tests.Add("Test2");
         tests.Add("Test3");
         tests.Add("Test4");
@@ -74,6 +75,8 @@ public class Performance : MonoBehaviour
         btn.onClick.AddListener(() =>
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine(useLib);
+            sb.AppendLine(testName);
 #if UNITY_EDITOR || DEBUG
             sb.AppendLine("请打包工程至非Development Build，并安装到真机再测试，编辑器中性能差异巨大，当前测试结果不具备测试意义");
 #endif
@@ -94,7 +97,7 @@ public class Performance : MonoBehaviour
         //首先实例化ILRuntime的AppDomain，AppDomain是一个应用程序域，每个AppDomain都是一个独立的沙盒
         appdomain = new ILRuntime.Runtime.Enviorment.AppDomain();
         StartCoroutine(LoadHotFixAssembly());
-
+        useLib = "ilrstack";
     }
 
     public void LoadHotFixAssemblyRegister()
@@ -103,6 +106,7 @@ public class Performance : MonoBehaviour
         //ILRuntimeJITFlags.JITImmediately表示默认使用寄存器VM执行所有方法
         appdomain = new ILRuntime.Runtime.Enviorment.AppDomain(ILRuntimeJITFlags.JITImmediately);
         StartCoroutine(LoadHotFixAssembly());
+        useLib = "ilrregister";
     }
 
     public void LoadLua()
@@ -116,6 +120,7 @@ public class Performance : MonoBehaviour
         Debug.LogError("请自行安装XLua并生成xlua绑定代码后，将performance.lua复制到StreamingAssets后，解除Performace.cs第一行注释");
 #endif
         OnHotFixLoaded();
+        useLib = "xlua";
     }
 
     IEnumerator LoadHotFixAssembly()
@@ -142,21 +147,23 @@ public class Performance : MonoBehaviour
         www.Dispose();
 
         //PDB文件是调试数据库，如需要在日志中显示报错的行号，则必须提供PDB文件，不过由于会额外耗用内存，正式发布时请将PDB去掉，下面LoadAssembly的时候pdb传null即可
-#if UNITY_ANDROID
-        www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.pdb");
-#else
-        www = new WWW("file:///" + Application.streamingAssetsPath + "/HotFix_Project.pdb");
-#endif
-        while (!www.isDone)
-            yield return null;
-        if (!string.IsNullOrEmpty(www.error))
-            UnityEngine.Debug.LogError(www.error);
-        byte[] pdb = www.bytes;
+//#if UNITY_ANDROID
+//        www = new WWW(Application.streamingAssetsPath + "/HotFix_Project.pdb");
+//#else
+//        www = new WWW("file:///" + Application.streamingAssetsPath + "/HotFix_Project.pdb");
+//#endif
+//        while (!www.isDone)
+//            yield return null;
+//        if (!string.IsNullOrEmpty(www.error))
+//            UnityEngine.Debug.LogError(www.error);
+//        byte[] pdb = www.bytes;
+//        www.Dispose();
+
         fs = new MemoryStream(dll);
-        p = new MemoryStream(pdb);
+        //p = new MemoryStream(pdb);
         try
         {
-            appdomain.LoadAssembly(fs, p, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+            appdomain.LoadAssembly(fs, null, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
         }
         catch
         {

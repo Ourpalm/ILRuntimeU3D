@@ -13,42 +13,44 @@ using XLua;
 //using System.Reflection;
 //using System.Linq;
 
+[LuaCallCSharp]
+public static class TransformUtil 
+{
+    public static void GetPosition(this Transform transform, out float x, out float y, out float z)
+    {
+        var pos = transform.position;
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
+    }
+
+    public static void SetPosition(this Transform transform, float x, float y, float z)
+    {
+        transform.position = new Vector3(x, y, z);
+    }
+
+    public static void Rotation(this Transform transform, float x, float y, float z)
+    {
+        transform.Rotate(new Vector3(x, y, z), 1);
+    }
+
+}
+
 //配置的详细介绍请看Doc下《XLua的配置.doc》
 public static class ExampleGenConfig
 {
     //lua中要使用到C#库的配置，比如C#标准库，或者Unity API，第三方库等。
     [LuaCallCSharp]
     public static List<Type> LuaCallCSharp = new List<Type>() {
-                typeof(System.Object),
-                typeof(UnityEngine.Object),
-                typeof(Vector2),
-                typeof(Vector3),
-                typeof(Vector4),
-                typeof(Quaternion),
-                typeof(Color),
-                typeof(Ray),
-                typeof(Bounds),
-                typeof(Ray2D),
-                typeof(Time),
                 typeof(GameObject),
-                typeof(Component),
-                typeof(Behaviour),
                 typeof(Transform),
-                typeof(Resources),
-                typeof(TextAsset),
-                typeof(Keyframe),
-                typeof(AnimationCurve),
-                typeof(AnimationClip),
-                typeof(MonoBehaviour),
-                typeof(ParticleSystem),
-                typeof(SkinnedMeshRenderer),
-                typeof(Renderer),
-                typeof(WWW),
-                typeof(Light),
-                typeof(Mathf),
-                typeof(System.Collections.Generic.List<int>),
-                typeof(Action<string>),
-                typeof(UnityEngine.Debug)
+            };
+
+    [GCOptimize]
+    [LuaCallCSharp]
+    public static List<Type> GCSharp = new List<Type>() {
+                typeof(Vector3),
+                typeof(Quaternion),
             };
 
     //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface

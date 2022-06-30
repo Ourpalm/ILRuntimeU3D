@@ -1323,7 +1323,7 @@ namespace CSObjectWrapEditor
                 {
                     foreach(var type in (obj as IEnumerable<Type>))
                     {
-                        OptimizeCfg.Add(type, flag);
+                        OptimizeCfg[type] = flag;
                     }
                 }
             }
