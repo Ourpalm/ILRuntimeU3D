@@ -54,15 +54,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\XLua\Src\Editor\LinkXmlGen\LinkXmlGen.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\2.0.2\Demo\Editor\ILRuntimeCrossBinding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\2.1.0\Demo\Editor\ILRuntimeCrossBinding.cs" />
     <Compile Include="Assets\XLua\Src\Editor\TemplateRef.cs" />
     <Compile Include="Assets\XLua\Editor\ExampleConfig.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Hotfix.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\2.0.2\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\2.1.0\Demo\Scripts\Examples\08_MonoBehaviour\Editor\MonoBehaviourAdapterEditor.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Generator.cs" />
     <Compile Include="Assets\XLua\Examples\13_BuildFromCLI\Editor\BuildFromCLI.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\2.0.2\Demo\Editor\ILRuntimeCLRBinding.cs" />
-    <Compile Include="Assets\Samples\ILRuntime\2.0.2\Demo\Editor\ILRuntimeMenu.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\2.1.0\Demo\Editor\ILRuntimeCLRBinding.cs" />
+    <Compile Include="Assets\Samples\ILRuntime\2.1.0\Demo\Editor\ILRuntimeMenu.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\XLua\Src\Editor\Template\LuaInterfaceBridge.tpl.txt" />
