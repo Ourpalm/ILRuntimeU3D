@@ -25,6 +25,14 @@ public class ILRuntimeCLRBinding
         AssetDatabase.Refresh();
     }
 
+    [MenuItem("ILRuntime/删除所有CLR绑定")]
+    static void DeleteCLRBindins()
+    {
+        System.IO.Directory.Delete("Assets/Samples/ILRuntime/Generated", true);
+        AssetDatabase.Refresh();
+    }
+
+
     static void InitILRuntime(ILRuntime.Runtime.Enviorment.AppDomain domain)
     {
         //这里需要注册所有热更DLL中用到的跨域继承Adapter，否则无法正确抓取引用

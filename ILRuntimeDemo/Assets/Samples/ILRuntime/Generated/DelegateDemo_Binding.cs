@@ -11,7 +11,11 @@ using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using ILRuntime.Reflection;
 using ILRuntime.CLR.Utils;
-
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+using AutoList = System.Collections.Generic.List<object>;
+#else
+using AutoList = ILRuntime.Other.UncheckedList<object>;
+#endif
 namespace ILRuntime.Runtime.Generated
 {
     unsafe class DelegateDemo_Binding
@@ -46,7 +50,7 @@ namespace ILRuntime.Runtime.Generated
             return global::DelegateDemo.TestMethodDelegate;
         }
 
-        static StackObject* CopyToStack_TestMethodDelegate_0(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        static StackObject* CopyToStack_TestMethodDelegate_0(ref object o, ILIntepreter __intp, StackObject* __ret, AutoList __mStack)
         {
             var result_of_this_method = global::DelegateDemo.TestMethodDelegate;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
@@ -57,7 +61,7 @@ namespace ILRuntime.Runtime.Generated
             global::DelegateDemo.TestMethodDelegate = (global::TestDelegateMethod)v;
         }
 
-        static StackObject* AssignFromStack_TestMethodDelegate_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        static StackObject* AssignFromStack_TestMethodDelegate_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, AutoList __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             global::TestDelegateMethod @TestMethodDelegate = (global::TestDelegateMethod)typeof(global::TestDelegateMethod).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
@@ -70,7 +74,7 @@ namespace ILRuntime.Runtime.Generated
             return global::DelegateDemo.TestFunctionDelegate;
         }
 
-        static StackObject* CopyToStack_TestFunctionDelegate_1(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        static StackObject* CopyToStack_TestFunctionDelegate_1(ref object o, ILIntepreter __intp, StackObject* __ret, AutoList __mStack)
         {
             var result_of_this_method = global::DelegateDemo.TestFunctionDelegate;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
@@ -81,7 +85,7 @@ namespace ILRuntime.Runtime.Generated
             global::DelegateDemo.TestFunctionDelegate = (global::TestDelegateFunction)v;
         }
 
-        static StackObject* AssignFromStack_TestFunctionDelegate_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        static StackObject* AssignFromStack_TestFunctionDelegate_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, AutoList __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             global::TestDelegateFunction @TestFunctionDelegate = (global::TestDelegateFunction)typeof(global::TestDelegateFunction).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
@@ -94,7 +98,7 @@ namespace ILRuntime.Runtime.Generated
             return global::DelegateDemo.TestActionDelegate;
         }
 
-        static StackObject* CopyToStack_TestActionDelegate_2(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        static StackObject* CopyToStack_TestActionDelegate_2(ref object o, ILIntepreter __intp, StackObject* __ret, AutoList __mStack)
         {
             var result_of_this_method = global::DelegateDemo.TestActionDelegate;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
@@ -105,7 +109,7 @@ namespace ILRuntime.Runtime.Generated
             global::DelegateDemo.TestActionDelegate = (System.Action<System.String>)v;
         }
 
-        static StackObject* AssignFromStack_TestActionDelegate_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        static StackObject* AssignFromStack_TestActionDelegate_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, AutoList __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action<System.String> @TestActionDelegate = (System.Action<System.String>)typeof(System.Action<System.String>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);

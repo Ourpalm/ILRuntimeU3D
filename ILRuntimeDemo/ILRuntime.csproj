@@ -146,6 +146,7 @@
     <Compile Include="Assets\ILRuntime\Runtime\Debugger\Protocol\SCThreadStarted.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Intepreter\OpCodes\OpCodeEnum.cs" />
     <Compile Include="Assets\ILRuntime\Runtime\Extensions.cs" />
+    <Compile Include="Assets\ILRuntime\Runtime\Enviorment\UnitySupport.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\ILRuntime\Plugins\ILRuntime.Mono.Cecil.dll" />
