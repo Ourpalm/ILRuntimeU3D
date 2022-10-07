@@ -99,6 +99,7 @@ public class CLRBindingDemo : MonoBehaviour
         //请在生成了绑定代码后解除下面这行的注释
         //请在生成了绑定代码后解除下面这行的注释
         //请在生成了绑定代码后解除下面这行的注释
+        appdomain.InitializeBindings();
         //ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
     }
 

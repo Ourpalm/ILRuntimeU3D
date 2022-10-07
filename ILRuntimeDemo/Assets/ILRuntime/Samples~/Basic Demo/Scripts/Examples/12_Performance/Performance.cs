@@ -176,7 +176,8 @@ public class Performance : MonoBehaviour
         appdomain.RegisterValueTypeBinder(typeof(Vector3), new Vector3Binder());
         appdomain.RegisterValueTypeBinder(typeof(Quaternion), new QuaternionBinder());
         appdomain.RegisterValueTypeBinder(typeof(Vector2), new Vector2Binder());
-        ILRuntime.Runtime.CLRBinding.CLRBindingUtils.Initialize(appdomain);
+        appdomain.InitializeBindings();
+        appdomain.DebugService.StartDebugService();
     }
 
     void OnHotFixLoaded()
