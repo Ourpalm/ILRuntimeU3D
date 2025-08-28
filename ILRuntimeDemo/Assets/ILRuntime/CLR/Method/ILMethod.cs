@@ -12,6 +12,7 @@ using ILRuntime.Runtime.Intepreter.RegisterVM;
 using ILRuntime.Runtime.Debugger;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Reflection;
+using ILRuntime.Hybrid;
 namespace ILRuntime.CLR.Method
 {
     public sealed class ILMethod : IMethod
@@ -20,6 +21,7 @@ namespace ILRuntime.CLR.Method
         OpCodeR[] bodyRegister;
         Dictionary<int, RegisterVMSymbol> registerSymbols;
         bool symbolFixed;
+        MethodReference reference;
         MethodDefinition def;
         List<IType> parameters;
         ILRuntime.Runtime.Enviorment.AppDomain appdomain;
@@ -43,6 +45,7 @@ namespace ILRuntime.CLR.Method
         Mono.Collections.Generic.Collection<Mono.Cecil.Cil.VariableDefinition> variables;
         int hashCode = -1;
         static int instance_id = 0x10000000;
+        MethodPatchContext patchCtx;
 
         const int JITWarmUpThreshold = 10;
 
@@ -51,6 +54,8 @@ namespace ILRuntime.CLR.Method
         public bool IsRegisterBodyReady { get { return bodyRegister != null; } }
 
         public MethodDefinition Definition { get { return def; } }
+
+        internal MethodReference MethodReference { get { return reference; } }
 
         public Dictionary<int, int[]> JumpTables { get { return jumptables; } }
         public Dictionary<int, int[]> JumpTablesRegister { get { return jumptablesR; } }
@@ -173,6 +178,8 @@ namespace ILRuntime.CLR.Method
                 }
                 else
                 {
+                    if (def.HasBody && def.Body.Instructions.Count == 0)
+                        return false;
                     if (jitImmediately)
                     {
                         InitCodeBody(true);
@@ -194,10 +201,22 @@ namespace ILRuntime.CLR.Method
                 }
             }
         }
-        public ILMethod(MethodDefinition def, ILType type, ILRuntime.Runtime.Enviorment.AppDomain domain, int flags)
+        public ILMethod(MethodReference reference, MethodDefinition md, ILType type, ILRuntime.Runtime.Enviorment.AppDomain domain, int flags)
         {
-            this.def = def;
-            declaringType = type;
+            this.reference = reference;
+            def = md;
+            if (type.HasGenericParameter && !type.IsGenericInstance)
+            {
+                KeyValuePair<string, IType>[] gas = new KeyValuePair<string, IType>[type.TypeDefinition.GenericParameters.Count];
+                for (int i = 0; i < gas.Length; i++)
+                {
+                    var gp = type.TypeDefinition.GenericParameters[i];
+                    gas[i] = new KeyValuePair<string, IType>(gp.Name, new ILGenericParameterType(gp));
+                }
+                declaringType = (ILType)type.MakeGenericInstance(gas);
+            }
+            else
+                declaringType = type;
             this.jitFlags = flags;
             if (def.ReturnType.IsGenericParameter)
             {
@@ -209,12 +228,24 @@ namespace ILRuntime.CLR.Method
                 isDelegateInvoke = true;
             this.appdomain = domain;
             paramCnt = def.HasParameters ? def.Parameters.Count : 0;
-            if(def.HasCustomAttributes)
+
+            if (declaringType.IsGenericInstance)
             {
-                for(int i = 0; i < def.CustomAttributes.Count; i++)
+                if (reference is MethodDefinition)
+                {
+                    this.reference = new MethodReference(def.Name, ReturnType.ToTypeReference(appdomain.LoadedModules[0]), declaringType.TypeReference);
+                    for (int i = 0; i < paramCnt; i++)
+                    {
+                        this.reference.Parameters.Add(new ParameterDefinition(Parameters[i].ToTypeReference(appdomain.LoadedModules[0])));
+                    }
+                }
+            }
+            if (def.HasCustomAttributes)
+            {
+                for (int i = 0; i < def.CustomAttributes.Count; i++)
                 {
                     int f;
-                    if(def.CustomAttributes[i].GetJITFlags(domain, out f))
+                    if (def.CustomAttributes[i].GetJITFlags(domain, out f))
                     {
                         this.jitFlags = f;
                         break;
@@ -224,7 +255,7 @@ namespace ILRuntime.CLR.Method
             jitImmediately = (jitFlags & ILRuntimeJITFlags.JITImmediately) == ILRuntimeJITFlags.JITImmediately;
             jitOnDemand = (jitFlags & ILRuntimeJITFlags.JITOnDemand) == ILRuntimeJITFlags.JITOnDemand;
 #if DEBUG && !DISABLE_ILRUNTIME_DEBUG
-            if (def.HasBody)
+            if (def.HasBody && def.Body.Instructions.Count > 0)
             {
                 var sp = GetValidSequence(0, 1);
                 if (sp != null)
@@ -267,10 +298,10 @@ namespace ILRuntime.CLR.Method
             return cur;
         }
 
-        public IType FindGenericArgument(string name)
+        public IType FindGenericArgument(string name, bool findDeclaringType= true)
         {
-            IType res = declaringType.FindGenericArgument(name);
-            if (res == null && genericParameters != null)
+            IType res = findDeclaringType ? declaringType.FindGenericArgument(name) : null;
+            if ((res == null) && genericParameters != null)
             {
                 foreach (var i in genericParameters)
                 {
@@ -278,9 +309,26 @@ namespace ILRuntime.CLR.Method
                         return i.Value;
                 }
             }
-            else
-                return res;
-            return null;
+            if (res == null && def.HasGenericParameters)
+            {
+                bool found = false;
+                TypeReference pt = null;
+                foreach (var j in def.GenericParameters)
+                {
+                    if (j.Name == name)
+                    {
+                        found = true;
+                        pt = j;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    res = new ILGenericParameterType(pt);
+                }
+            }
+            return res;
+            
         }
 
         internal OpCode[] Body
@@ -291,6 +339,25 @@ namespace ILRuntime.CLR.Method
                     InitCodeBody(false);
                 return body;
             }
+        }
+
+        internal void SetMethodPatchContext(MethodPatchContext context)
+        {
+            this.patchCtx = context;
+        }
+
+        internal void SetBodyAndJumptables(OpCode[] body, Dictionary<int, int[]> jumptables)
+        {
+            if (def.HasBody)
+            {
+                localVarCnt = def.Body.Variables.Count;
+                variables = def.Body.Variables;
+#if !DEBUG || DISABLE_ILRUNTIME_DEBUG
+                def.Body = null;
+#endif
+            }
+            this.body = body;
+            this.jumptables = jumptables;
         }
 
         internal OpCodeR[] BodyRegister
@@ -560,14 +627,28 @@ namespace ILRuntime.CLR.Method
                 Dictionary<Mono.Cecil.Cil.Instruction, int> addr = new Dictionary<Mono.Cecil.Cil.Instruction, int>();
 
                 bool noRelease = false;
-                if (register)
+                bool hasInstruction = def.Body.Instructions.Count > 0;
+                if (register && hasInstruction)
                 {
                     JITCompiler jit = new JITCompiler(appdomain, declaringType, this);
                     bodyRegister = jit.Compile(out stackRegisterCnt, out jumptablesR, addr, out registerSymbols);
                 }
                 else
                 {
-                    InitStackCodeBody(addr);
+                    if (hasInstruction)
+                        InitStackCodeBody(addr);
+                    else if(declaringType.IsGenericInstance)
+                    {
+                        var gd = declaringType.GetGenericDefinition();
+                        var mi = gd.GetMethodByGenericDefinition(this);
+                        if (mi.patchCtx.IsValid)
+                        {
+                            mi.patchCtx.GenerateCodeBody(declaringType.TypeReference, this, appdomain);
+                            return;
+                        }
+                        else
+                            body = new OpCode[0];
+                    }
                     if (jitOnDemand)
                         noRelease = bodyRegister == null;
                 }
@@ -736,29 +817,41 @@ namespace ILRuntime.CLR.Method
                 case OpCodeEnum.Ldvirtftn:
                 case OpCodeEnum.Callvirt:
                     {
-                        bool invalidToken;
-                        var m = appdomain.GetMethod(token, declaringType, this, out invalidToken);
-                        if (m != null)
+                        try
                         {
-                            if(code.Code == OpCodeEnum.Callvirt && m is ILMethod)
+                            bool invalidToken;
+                            var m = appdomain.GetMethod(token, declaringType, this, out invalidToken);
+                            if (m != null)
                             {
-                                ILMethod ilm = (ILMethod)m;
-                                if (!ilm.def.IsAbstract && !ilm.def.IsVirtual && !ilm.DeclearingType.IsInterface)
-                                    code.Code = OpCodeEnum.Call;
+                                if (code.Code == OpCodeEnum.Callvirt && m is ILMethod)
+                                {
+                                    ILMethod ilm = (ILMethod)m;
+                                    if (!ilm.def.IsAbstract && !ilm.def.IsVirtual && !ilm.DeclearingType.IsInterface)
+                                        code.Code = OpCodeEnum.Call;
+                                }
+                                if (invalidToken)
+                                    code.TokenInteger = m.GetHashCode();
+                                else
+                                    code.TokenInteger = token.GetHashCode();
                             }
-                            if (invalidToken)
-                                code.TokenInteger = m.GetHashCode();
                             else
-                                code.TokenInteger = token.GetHashCode();
+                            {
+                                //Cannot find method or the method is dummy
+                                MethodReference _ref = (MethodReference)token;
+                                int paramCnt = _ref.HasParameters ? _ref.Parameters.Count : 0;
+                                if (_ref.HasThis)
+                                    paramCnt++;
+                                code.TokenLong = paramCnt;
+                            }
                         }
-                        else
+                        catch(Exception e)
                         {
-                            //Cannot find method or the method is dummy
+                            appdomain.CacheException(e);
                             MethodReference _ref = (MethodReference)token;
                             int paramCnt = _ref.HasParameters ? _ref.Parameters.Count : 0;
                             if (_ref.HasThis)
                                 paramCnt++;
-                            code.TokenLong = paramCnt;
+                            code.TokenLong = (long)paramCnt | ((long)e.GetHashCode() << 32);
                         }
                     }
                     break;
@@ -841,6 +934,7 @@ namespace ILRuntime.CLR.Method
             {
                 if (t is ILType || isGenericParameter)
                 {
+                    appdomain.CacheType(t);
                     return t.GetHashCode();
                 }
                 else
@@ -917,23 +1011,9 @@ namespace ILRuntime.CLR.Method
                 if (pt.IsGenericParameter)
                 {
                     type = FindGenericArgument(pt.Name);
-                    if (type == null && def.HasGenericParameters)
+                    if (type == null)
                     {
-                        bool found = false;
-                        foreach (var j in def.GenericParameters)
-                        {
-                            if (j.Name == pt.Name)
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found)
-                        {
-                            type = new ILGenericParameterType(pt.Name);
-                        }
-                        else
-                            throw new NotSupportedException("Cannot find Generic Parameter " + pt.Name + " in " + def.FullName);
+                        throw new NotSupportedException("Cannot find Generic Parameter " + pt.Name + " in " + def.FullName);
                     }
                 }
                 else
@@ -957,13 +1037,32 @@ namespace ILRuntime.CLR.Method
                 genericParameters[i] = new KeyValuePair<string, IType>(name, val);
             }
 
-            ILMethod m = new ILMethod(def, declaringType, appdomain, jitFlags);
+            GenericInstanceMethod gim = new GenericInstanceMethod(reference);
+            foreach (var i in genericArguments)
+            {
+                TypeReference tRef = null;
+                if (i is ILType ilType)
+                {
+                    tRef = ilType.TypeReference;
+                }
+                else
+                {
+                    CLRType clrType = (CLRType)i;
+                    tRef = appdomain.LoadedModules[0].ImportReference(clrType.TypeForCLR);
+                }
+                gim.GenericArguments.Add(tRef);
+            }
+            ILMethod m = new ILMethod(gim, def, declaringType, appdomain, jitFlags);
             m.genericParameters = genericParameters;
             m.genericArguments = genericArguments;
             m.genericDefinition = this;
             if (m.def.ReturnType.IsGenericParameter)
             {
                 m.ReturnType = m.FindGenericArgument(m.def.ReturnType.Name);
+            }
+            if(patchCtx.IsValid)
+            {
+                patchCtx.GenerateCodeBody(declaringType.TypeReference, m, appdomain);
             }
             return m;
         }

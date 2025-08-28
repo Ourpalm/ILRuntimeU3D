@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -217,7 +217,7 @@ namespace ILRuntime.Runtime.Enviorment
             invocated = true;
         }
 
-        internal StackObject* ESP
+        public StackObject* ESP
         {
             get
             {
@@ -229,7 +229,7 @@ namespace ILRuntime.Runtime.Enviorment
             }
         }
 
-        internal ILIntepreter Intepreter
+        public ILIntepreter Intepreter
         {
             get
             {
@@ -237,7 +237,7 @@ namespace ILRuntime.Runtime.Enviorment
             }
         }
 
-        internal AutoList ManagedStack
+        public AutoList ManagedStack
         {
             get
             {
@@ -314,7 +314,7 @@ namespace ILRuntime.Runtime.Enviorment
             paramCnt++;
         }
 
-        public void PushValueType<T>(ref T obj)
+        internal static StackObject* PushValueTypeSub<T>(ref T obj, StackObject* esp, Runtime.Enviorment.AppDomain domain, ILIntepreter intp, AutoList mStack, bool useRegister)
         {
             Type t = typeof(T);
             bool needPush = false;
@@ -339,7 +339,12 @@ namespace ILRuntime.Runtime.Enviorment
             {
                 res = ILIntepreter.PushObject(esp, mStack, obj, true);
             }
-            esp = res;
+            return res;
+        }
+
+        public void PushValueType<T>(ref T obj)
+        {
+            esp = PushValueTypeSub(ref obj, esp, domain, intp, mStack, useRegister);
             paramCnt++;
         }
 
@@ -356,12 +361,17 @@ namespace ILRuntime.Runtime.Enviorment
 
         public void PushReference(int index)
         {
-            var dst = ILIntepreter.Add(ebp, index);
+            var dst = ebp + index;
             esp->ObjectType = ObjectTypes.StackObjectReference;
             *(long*)&esp->Value = (long)dst;
             if (useRegister)
                 mStack.Add(null);
             esp++;
+        }
+
+        public void PushParameter<T>(T val)
+        {
+            PushParameter(GetInvocationType<T>(), val);
         }
 
         internal void PushParameter<T>(InvocationTypes type, T val)
@@ -389,6 +399,31 @@ namespace ILRuntime.Runtime.Enviorment
                 default:
                     PushObject(val);
                     break;
+            }
+        }
+
+        public T ReadResult<T>()
+        {
+            return ReadResult<T>(GetInvocationType<T>());
+        }
+
+        public T ReadResult<T>(int index)
+        {
+            var type = GetInvocationType<T>();
+            switch (type)
+            {
+                case InvocationTypes.Integer:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromInteger(ReadInteger(index));
+                case InvocationTypes.Long:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromLong(ReadLong(index));
+                case InvocationTypes.Float:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromFloat(ReadFloat(index));
+                case InvocationTypes.Double:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromDouble(ReadDouble(index));
+                case InvocationTypes.ValueType:
+                    return ReadValueType<T>(index);
+                default:
+                    return ReadObject<T>(index);
             }
         }
 
@@ -441,7 +476,7 @@ namespace ILRuntime.Runtime.Enviorment
 
         public int ReadInteger(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return esp->Value;
         }
         public T ReadInteger<T>()
@@ -456,7 +491,7 @@ namespace ILRuntime.Runtime.Enviorment
         }
         public long ReadLong(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return *(long*)&esp->Value;
         }
         public T ReadLong<T>()
@@ -472,7 +507,7 @@ namespace ILRuntime.Runtime.Enviorment
 
         public float ReadFloat(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return *(float*)&esp->Value;
         }
 
@@ -486,9 +521,9 @@ namespace ILRuntime.Runtime.Enviorment
             CheckReturnValue();
             return *(double*)&esp->Value;
         }
-        public double ReaDouble(int index)
+        public double ReadDouble(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return *(double*)&esp->Value;
         }
         public T ReadDouble<T>()
@@ -503,13 +538,18 @@ namespace ILRuntime.Runtime.Enviorment
         }
         public bool ReadBool(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return esp->Value == 1;
         }
 
-        public T ReadValueType<T>()
+        public T ReadValueType<T>(int index)
         {
-            CheckReturnValue();
+            var esp = ebp + index;
+            return ReadValueTypeSub<T>(esp, domain, intp, mStack);
+        }
+
+        internal static T ReadValueTypeSub<T>(StackObject* val, Runtime.Enviorment.AppDomain domain, ILIntepreter intp, AutoList mStack)
+        {
             Type t = typeof(T);
             T res = default(T);
             ValueTypeBinder binder;
@@ -518,14 +558,20 @@ namespace ILRuntime.Runtime.Enviorment
                 var binderT = binder as ValueTypeBinder<T>;
                 if (binderT != null)
                 {
-                    binderT.ParseValue(ref res, intp, esp, mStack);
+                    binderT.ParseValue(ref res, intp, val, mStack);
                 }
                 else
-                    res = (T)t.CheckCLRTypes(StackObject.ToObject(esp, domain, mStack));
+                    res = (T)t.CheckCLRTypes(StackObject.ToObject(val, domain, mStack));
             }
             else
-                res = (T)t.CheckCLRTypes(StackObject.ToObject(esp, domain, mStack));
+                res = (T)t.CheckCLRTypes(StackObject.ToObject(val, domain, mStack));
             return res;
+        }
+
+        public T ReadValueType<T>()
+        {
+            CheckReturnValue();
+            return ReadValueTypeSub<T>(esp, domain, intp, mStack);
         }
 
         public T ReadObject<T>()
@@ -541,7 +587,7 @@ namespace ILRuntime.Runtime.Enviorment
         }
         public T ReadObject<T>(int index)
         {
-            var esp = ILIntepreter.Add(ebp, index);
+            var esp = ebp + index;
             return (T)typeof(T).CheckCLRTypes(StackObject.ToObject(esp, domain, mStack));
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -56,7 +56,7 @@ namespace ILRuntime.Runtime.CLRBinding
                     }
                     else
                         ts = new Type[0];
-                    var prop = type.GetProperty(t[1], ts);
+                    var prop = type.GetProperties().FirstOrDefault(p => p.Name == t[1] && p.GetIndexParameters().Select(pp => pp.ParameterType).SequenceEqual(ts));
                     if (prop == null)
                     {
                         return true;
@@ -180,7 +180,7 @@ namespace ILRuntime.Runtime.CLRBinding
                     }
                     else
                     {
-                        sb.AppendLine(string.Format("            {0} @{1} = ({0})typeof({0}).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (CLR.Utils.Extensions.TypeFlags){2});", realClsName, name, (int)p.GetTypeFlagsRecursive()));
+                        sb.AppendLine(string.Format("            {0} @{1} = ({0})typeof({0}).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (ILRuntime.CLR.Utils.Extensions.TypeFlags){2});", realClsName, name, (int)p.GetTypeFlagsRecursive()));
                     }
 
                 }
@@ -256,7 +256,7 @@ namespace ILRuntime.Runtime.CLRBinding
             }
             else
             {
-                return string.Format("({0})typeof({0}).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags){1})", realClsName, (int)type.GetTypeFlagsRecursive());
+                return string.Format("({0})typeof({0}).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (ILRuntime.CLR.Utils.Extensions.TypeFlags){1})", realClsName, (int)type.GetTypeFlagsRecursive());
             }
         }
 
@@ -478,17 +478,37 @@ namespace ILRuntime.Runtime.CLRBinding
             }
         }
 
-        static bool CheckAssignableToCrossBindingAdapters(Enviorment.AppDomain domain, Type type)
+        static bool CheckAssignableToCrossBindingAdapters(Enviorment.AppDomain domain, Type type, HashSet<Type> crossbindingTypes=null)
         {
             if (type == typeof(object))
                 return true;
-            bool res = domain.CrossBindingAdaptors.ContainsKey(type);
+            if(crossbindingTypes == null)
+            {
+                crossbindingTypes = new HashSet<Type>();
+                foreach (var i in domain.CrossBindingAdaptors)
+                {
+                    crossbindingTypes.Add(i.Key);
+                    List<Type> bases = new List<Type>();
+                    bases.Add(i.Key.BaseType);
+                    bases.AddRange(i.Key.GetInterfaces());
+                    foreach (var t in bases)
+                    {
+                        var curT = t;
+                        while (curT != null && curT != typeof(object))
+                        {
+                            crossbindingTypes.Add(curT);
+                            curT = curT.BaseType;
+                        }
+                    }
+                }
+            }
+            bool res = crossbindingTypes.Contains(type);
             if (!res)
             {
                 var baseType = type.BaseType;
                 if (baseType != null && baseType != typeof(object))
                 {
-                    res = CheckAssignableToCrossBindingAdapters(domain, baseType);
+                    res = CheckAssignableToCrossBindingAdapters(domain, baseType, crossbindingTypes);
                 }
             }
             if (!res)
@@ -496,10 +516,14 @@ namespace ILRuntime.Runtime.CLRBinding
                 var interfaces = type.GetInterfaces();
                 foreach(var i in interfaces)
                 {
-                    res = CheckAssignableToCrossBindingAdapters(domain, i);
+                    res = CheckAssignableToCrossBindingAdapters(domain, i, crossbindingTypes);
                     if (res)
                         break;
                 }
+            }
+            if (res)
+            {
+
             }
             return res;
         }

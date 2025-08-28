@@ -1,5 +1,6 @@
 {
     "name": "ILRuntime",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -840,7 +840,8 @@ namespace ILRuntime.Runtime.Intepreter
         {
             get
             {
-                throw new NotSupportedException();
+                ThrowAdapterNotFound(method);
+                return null;
             }
         }
         public override Delegate Delegate
@@ -921,7 +922,7 @@ namespace ILRuntime.Runtime.Intepreter
             }
         }
 
-        unsafe protected InvocationContext BeginInvoke()
+        public unsafe InvocationContext BeginInvoke()
         {
             var ctx = appdomain.BeginInvoke(method);
             *ctx.ESP = default(StackObject);
@@ -1110,7 +1111,7 @@ namespace ILRuntime.Runtime.Intepreter
                 }
                 if (im.IsDelegateInvoke)
                 {
-                    if (im.ParameterCount == method_count && ret_type == method.ReturnType)
+                    if (im.ParameterCount == method_count && method.ReturnType.CanAssignTo(ret_type))
                     {
 
                         for (int i = 0; i < im.ParameterCount; i++)
@@ -1134,6 +1135,8 @@ namespace ILRuntime.Runtime.Intepreter
 
         public Delegate GetConvertor(Type type)
         {
+            if (type.IsAssignableFrom(NativeDelegateType))
+                return Delegate;
             if (converters == null)
                 converters = new Dictionary<System.Type, Delegate>(new ByReferenceKeyComparer<Type>());
             Delegate res;
@@ -1209,12 +1212,15 @@ namespace ILRuntime.Runtime.Intepreter
         }
     }
 
-    unsafe interface IDelegateAdapter
-    {        Type NativeDelegateType { get; }
+    public unsafe interface IDelegateAdapter
+    {        
+        Type NativeDelegateType { get; }
         Delegate Delegate { get; }
         IDelegateAdapter Next { get; }
         ILTypeInstance Instance { get; }
         ILMethod Method { get; }
+
+        InvocationContext BeginInvoke();
         StackObject* ILInvoke(ILIntepreter intp, StackObject* esp, AutoList mStack);
         IDelegateAdapter Instantiate(Enviorment.AppDomain appdomain, ILTypeInstance instance, ILMethod method);
         bool IsClone { get; }

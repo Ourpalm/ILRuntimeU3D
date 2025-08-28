@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 #endif
 using System.Reflection;
-
+using ILRuntime.Runtime.Enviorment;
 #if DEBUG && !DISABLE_ILRUNTIME_DEBUG
 using AutoList = System.Collections.Generic.List<object>;
 #else
@@ -141,7 +141,7 @@ namespace ILRuntime.Runtime.Debugger
                     ins = vmSymbol.Instruction;
                     sb.AppendLine(string.Format("{0}(JIT_{1:0000}:{2})", ins, frames[0].Address.Value, frames[0].Method.BodyRegister[frames[0].Address.Value]));
                 }
-                else
+                else if (frames[0].Method.Definition.Body.Instructions.Count > 0)
                 {
                     ins = frames[0].Method.Definition.Body.Instructions[frames[0].Address.Value];
                     sb.AppendLine(ins.ToString());
@@ -179,7 +179,7 @@ namespace ILRuntime.Runtime.Debugger
                 }
                 else
                 {
-                    if (f.Address != null)
+                    if (f.Address != null && m.Definition.Body.Instructions.Count > 0)
                     {
                         ins = m.Definition.Body.Instructions[f.Address.Value];
                         var md = m.Definition;
@@ -203,7 +203,19 @@ namespace ILRuntime.Runtime.Debugger
                 var addr = *(long*)&arg->Value;
                 arg = (StackObject*)addr;
             }
-            ILTypeInstance instance = arg->ObjectType != ObjectTypes.Null ? intepreter.Stack.ManagedStack[arg->Value] as ILTypeInstance : null;
+            ILTypeInstance instance = null;
+            if (arg->ObjectType != ObjectTypes.Null)
+            {
+                var box = intepreter.Stack.ManagedStack[arg->Value];
+                if (box is ILTypeInstance ilInstance)
+                {
+                    instance = ilInstance;
+                }
+                else if (box is CrossBindingAdaptorType adaptor)
+                {
+                    instance = adaptor.ILInstance;
+                }
+            }
             if (instance == null)
                 return "null";
             var fields = instance.Type.TypeDefinition.Fields;
@@ -674,7 +686,14 @@ namespace ILRuntime.Runtime.Debugger
                     vType = m.DeclearingType;
                 }
 
-                v = vType.TypeForCLR.CheckCLRTypes(v);
+                try
+                {
+                    v = vType.TypeForCLR.CheckCLRTypes(v);
+                }
+                catch(Exception ex)
+                {
+                    v = ex.ToString();
+                }
                 VariableInfo vinfo = VariableInfo.FromObject(v);
                 vinfo.Address = (long)val;
                 vinfo.Name = name;
@@ -694,7 +713,14 @@ namespace ILRuntime.Runtime.Debugger
                 string vName = null;
                 m.Definition.DebugInformation.TryGetName(lv, out vName);
                 string name = string.IsNullOrEmpty(vName) ? "v" + lv.Index : vName;
-                v = type.TypeForCLR.CheckCLRTypes(v);
+                try
+                {
+                    v = type.TypeForCLR.CheckCLRTypes(v);
+                }
+                catch(Exception ex)
+                {
+                    v = ex.ToString();
+                }
                 VariableInfo vinfo = VariableInfo.FromObject(v);
                 vinfo.Address = (long)val;
                 vinfo.Name = name;
@@ -764,7 +790,11 @@ namespace ILRuntime.Runtime.Debugger
                     }
                 }
                 else
+                {
+                    if (info != null)
+                        return new VariableInfo[] { info };
                     return new VariableInfo[] { VariableInfo.NullReferenceExeption };
+                }
             }
             else
                 return new VariableInfo[] { VariableInfo.NullReferenceExeption };
@@ -841,6 +871,7 @@ namespace ILRuntime.Runtime.Debugger
                     info.Type = VariableTypes.IndexAccess;
                     info.Offset = i;
                     info.Value = string.Format("{0},{1}", SafeToString(keys[i]), SafeToString(values[i]));
+                    info.ValueObjType = values[i].GetType();
                     info.Expandable = true;
                     res[i] = info;
                 }
@@ -978,53 +1009,9 @@ namespace ILRuntime.Runtime.Debugger
                         return info;
                     }
                     else
-                    {
-                        //if(obj is ILTypeInstance)
-                        //{
-                        //    var m = ((ILTypeInstance)obj).Type.GetMethod("get_Item");
-                        //    if (m != null)
-                        //    {
-                        //        res = intepreter.AppDomain.Invoke(m, obj, idxObj);
-                        //        info = VariableInfo.FromObject(res);
-                        //        info.Type = VariableTypes.IndexAccess;
-                        //        info.TypeName = m.ReturnType.FullName;
-                        //        info.Expandable = res != null && !m.ReturnType.IsPrimitive;
-
-                        //        return info;
-                        //    }
-                        //    else
-                        //        return VariableInfo.NullReferenceExeption;
-                        //}
-                        //else
-                        //{
-                        //if(obj is ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)
-                        //{
-                        //    throw new NotImplementedException();
-                        //}
-                        //else
-                        //{
-                        //if (obj is IDictionary && idxObj is int)
-                        //{
-                        //    IDictionary dic = (IDictionary)obj;
-                        //    var keys = GetArray(dic.Keys);
-                        //    if (keys[0].GetType() != typeof(int))
-                        //    {
-                        //        int index = (int)idxObj;
-                        //        var values = GetArray(dic.Values);
-                        //        var t = typeof(KeyValuePair<,>).MakeGenericType(keys[index].GetType(), values[index].GetType());
-                        //        var ctor = t.GetConstructor(new Type[] { keys[index].GetType(), values[index].GetType() });
-                        //        res = ctor.Invoke(new object[] { keys[index], values[index] });
-                        //        info = VariableInfo.FromObject(res);
-                        //        info.Type = VariableTypes.IndexAccess;
-                        //        info.Offset = index;
-                        //        info.TypeName = t.FullName;
-                        //        info.Expandable = true;
-                        //        info.ValueObjType = t;
-
-                        //        return info;
-                        //    }
-                        //}
-
+                    {   
+                        if (objType == null)
+                            objType = obj.GetType();
                         var pi = GetOverrideIndexer(objType, info.ValueObjType);
                         //var pi = obj.GetType().GetProperty("Item");
                         if (pi != null)
@@ -1038,9 +1025,56 @@ namespace ILRuntime.Runtime.Debugger
                             return info;
                         }
                         else
-                            return VariableInfo.GetError(string.Format("无法将带[] 的索引应用于“{0}”类型的表达式", objType.FullName));
-                        //}
-                        //}
+                        {
+                            if (obj is ILTypeInstance)
+                            {
+                                var m = ((ILTypeInstance)obj).Type.GetMethod("get_Item");
+                                if (m != null)
+                                {
+                                    res = intepreter.AppDomain.Invoke(m, obj, idxObj);
+                                    info = VariableInfo.FromObject(res);
+                                    info.Type = VariableTypes.IndexAccess;
+                                    info.TypeName = m.ReturnType.FullName;
+                                    info.Expandable = res != null && !m.ReturnType.IsPrimitive;
+
+                                    return info;
+                                }
+                                else
+                                    return VariableInfo.NullReferenceExeption;
+                            }
+                            else
+                            {
+                                if (obj is ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)
+                                {
+                                    throw new NotImplementedException();
+                                }
+                                else
+                                {
+                                    if (obj is IDictionary && idxObj is int)
+                                    {
+                                        IDictionary dic = (IDictionary)obj;
+                                        var keys = GetArray(dic.Keys);
+                                        if (keys[0].GetType() != typeof(int))
+                                        {
+                                            int index = (int)idxObj;
+                                            var values = GetArray(dic.Values);
+                                            var t = typeof(KeyValuePair<,>).MakeGenericType(keys[index].GetType(), values[index].GetType());
+                                            var ctor = t.GetConstructor(new Type[] { keys[index].GetType(), values[index].GetType() });
+                                            res = ctor.Invoke(new object[] { keys[index], values[index] });
+                                            info = VariableInfo.FromObject(res);
+                                            info.Type = VariableTypes.IndexAccess;
+                                            info.Offset = index;
+                                            info.TypeName = t.FullName;
+                                            info.Expandable = true;
+                                            info.ValueObjType = t;
+
+                                            return info;
+                                        }
+                                    }
+                                    return VariableInfo.GetError(string.Format("无法将带[] 的索引应用于“{0}”类型的表达式", objType.FullName));
+                                }
+                            }
+                        }
                     }
                 }
                 else
@@ -1614,7 +1648,7 @@ namespace ILRuntime.Runtime.Debugger
             }
         }
 
-        internal unsafe void DumpStack(StackObject* esp, RuntimeStack stack)
+        internal unsafe StringBuilder DumpStack(StackObject* esp, RuntimeStack stack)
         {
             var start = stack.StackBase;
             var end = esp + 10;
@@ -1658,7 +1692,7 @@ namespace ILRuntime.Runtime.Debugger
                 }
                 catch
                 {
-                    sb.Append(" Cannot Fetch Object Info");
+                    sb.Append(string.Format(" Cannot Fetch Object Info(Value:0x{0:X8}, ValueLow:0x{1:X8}", i->Value, i->ValueLow));
                 }
                 if (i < esp)
                 {
@@ -1701,6 +1735,8 @@ namespace ILRuntime.Runtime.Debugger
                         GetStackObjectText(sb, ptr, mStack, valuePointerEnd);
                         final.AppendLine(sb.ToString());
                     }
+
+                    i = Minus(i, i->ValueLow + 1);
                 }
                 catch
                 {
@@ -1716,8 +1752,9 @@ namespace ILRuntime.Runtime.Debugger
                         sb.Append(" Cannot Fetch Object Info");
                     }
                     final.AppendLine(sb.ToString());
+
+                    i = Minus(i, 1);
                 }
-                i = Minus(i, i->ValueLow + 1);
             }
             final.AppendLine("Managed Objects:");
             for (int i = 0; i < mStack.Count; i++)
@@ -1729,6 +1766,7 @@ namespace ILRuntime.Runtime.Debugger
 #else
             UnityEngine.Debug.LogWarning(final.ToString());
 #endif
+            return final;
         }
 
         unsafe void GetStackObjectText(StringBuilder sb, StackObject* esp, AutoList mStack, StackObject* valueTypeEnd)

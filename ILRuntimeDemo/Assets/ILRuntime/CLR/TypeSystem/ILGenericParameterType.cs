@@ -1,4 +1,5 @@
-﻿using ILRuntime.Runtime.Stack;
+﻿using ILRuntime.Mono.Cecil;
+using ILRuntime.Runtime.Stack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,18 +7,34 @@ using System.Text;
 
 namespace ILRuntime.CLR.TypeSystem
 {
-    class ILGenericParameterType : IType
+    public class ILGenericParameterType : IType
     {
         string name;
         bool isArray, isByRef;
         ILGenericParameterType arrayType, byrefType, elementType;
+        TypeReference reference;
         public ILGenericParameterType(string name)
         {
             this.name = name;
         }
+
+        public ILGenericParameterType(TypeReference tr)
+        {
+            name = tr.Name;
+            reference = tr;
+        }
+
         public bool IsGenericInstance
         {
             get { return false; }
+        }
+
+        public TypeReference TypeReference
+        {
+            get
+            {
+                return reference;
+            }
         }
 
         public KeyValuePair<string, IType>[] GenericArguments
@@ -112,7 +129,8 @@ namespace ILRuntime.CLR.TypeSystem
         {
             if (byrefType == null)
             {
-                byrefType = new ILGenericParameterType(name + "&");
+                TypeReference tr = new ByReferenceType(reference);
+                byrefType = new ILGenericParameterType(tr);
                 byrefType.isByRef = true;
                 byrefType.elementType = this;
             }
@@ -129,7 +147,8 @@ namespace ILRuntime.CLR.TypeSystem
         {
             if (arrayType == null)
             {
-                arrayType = new ILGenericParameterType(name + "[]");
+                TypeReference tr = new ArrayType(reference, rank);
+                arrayType = new ILGenericParameterType(tr);
                 arrayType.isArray = true;
                 arrayType.elementType = this;
             }
@@ -246,6 +265,14 @@ namespace ILRuntime.CLR.TypeSystem
             get
             {
                 return -1;
+            }
+        }
+
+        public ValueTypeInitInfo ValueTypeInitializationInfo
+        {
+            get
+            {
+                return null;
             }
         }
     }

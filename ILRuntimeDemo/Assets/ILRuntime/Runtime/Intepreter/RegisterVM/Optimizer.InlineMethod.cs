@@ -110,6 +110,10 @@ namespace ILRuntime.Runtime.Intepreter.RegisterVM
                     {
                         opcode.Operand += branchOffset;
                     }
+                    else if(IsIntermediateBranching(opcode.Code))
+                    {
+                        opcode.Operand4 += branchOffset;
+                    }
                     if (opcode.Code == OpCodeREnum.Switch)
                     {
                         int[] targets = method.JumpTablesRegister[opcode.Operand];

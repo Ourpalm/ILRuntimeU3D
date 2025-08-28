@@ -16,6 +16,8 @@ using ILRuntime.Runtime.Stack;
 using ILRuntime.Other;
 using ILRuntime.Runtime.Intepreter.RegisterVM;
 using System.Threading;
+using ILRuntime.Hybrid;
+
 
 #if DEBUG && !DISABLE_ILRUNTIME_DEBUG
 using AutoList = System.Collections.Generic.List<object>;
@@ -56,6 +58,7 @@ namespace ILRuntime.Runtime.Enviorment
         List<IType> typesByIndex = new List<IType>();
         ThreadSafeDictionary<int, IType> mapTypeToken = new ThreadSafeDictionary<int, IType>();
         ThreadSafeDictionary<int, IMethod> mapMethod = new ThreadSafeDictionary<int, IMethod>();
+        ThreadSafeDictionary<int, Exception> mapException = new ThreadSafeDictionary<int, Exception>();
         ThreadSafeDictionary<long, string> mapString = new ThreadSafeDictionary<long, string>();
         Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate> redirectMap = new Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate>();
         Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate> fieldGetterMap = new Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate>();
@@ -71,6 +74,8 @@ namespace ILRuntime.Runtime.Enviorment
         DebugService debugService;
         AsyncJITCompileWorker jitWorker = new AsyncJITCompileWorker();
         int defaultJITFlags;
+        List<ModuleDefinition> loadedModules = new List<ModuleDefinition>();
+        List<Assembly> referenceAssemblies = new List<Assembly>();
 
         /// <summary>
         /// Determine if invoking unbinded CLR method(using reflection) is allowed
@@ -86,6 +91,8 @@ namespace ILRuntime.Runtime.Enviorment
 #endif
 
         internal bool SuppressStaticConstructor { get; set; }
+
+        internal List<ModuleDefinition> LoadedModules { get { return loadedModules; } }
 
         public int DefaultJITFlags { get { return defaultJITFlags; } }
 
@@ -580,7 +587,19 @@ namespace ILRuntime.Runtime.Enviorment
             {
                 module.ReadSymbols(symbolReader.GetSymbolReader(module, symbol)); //加载符号表
             }
+            InitializeFromModule(module);
+        }
 
+        internal void AddType(ILType type)
+        {
+            mapType[type.FullName] = type;
+            mapTypeToken[type.GetHashCode()] = type;
+            mapTypeToken[type.TypeDefinition.GetHashCode()] = type;
+        }
+
+        internal void InitializeFromModule(ModuleDefinition module)
+        {
+            loadedModules.Add(module);
             if (module.HasAssemblyReferences) //如果此模块引用了其他模块
             {
                 /*foreach (var ar in module.AssemblyReferences)
@@ -595,15 +614,13 @@ namespace ILRuntime.Runtime.Enviorment
 
             if (module.HasTypes)
             {
-                List<ILType> types = new List<ILType>();
-
                 foreach (var t in module.GetTypes()) //获取所有此模块定义的类型
                 {
+                    if (t.IsPrimitive)
+                        continue;
                     ILType type = new ILType(t, this);
 
-                    mapType[t.FullName] = type;
-                    mapTypeToken[type.GetHashCode()] = type;
-                    types.Add(type);
+                    AddType(type);
 
                 }
             }
@@ -632,6 +649,11 @@ namespace ILRuntime.Runtime.Enviorment
         public void AddReferenceBytes(string name, byte[] content)
         {
             references[name] = content;
+        }
+
+        public void AddReferenceAssembly(Assembly asm)
+        {
+            referenceAssemblies.Add(asm);
         }
 
         public void RegisterCLRMethodRedirection(MethodBase mi, CLRRedirectionDelegate func)
@@ -833,7 +855,7 @@ namespace ILRuntime.Runtime.Enviorment
                 return null;
             }
 
-            if (mapType.TryGetValue(fullname, out res))
+            if (mapType.InnerDictionary.TryGetValue(fullname, out res))
                 return res;
 
 
@@ -934,6 +956,24 @@ namespace ILRuntime.Runtime.Enviorment
             else
             {
                 Type t = Type.GetType(fullname);
+                if(t == null)
+                {
+                    foreach(var i in referenceAssemblies)
+                    {
+                        t = i.GetType(fullname);
+                        if (t != null)
+                            break;
+                    }
+                }
+                if (t == null)
+                {
+                    foreach(var i in System.AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        t = i.GetType(fullname);
+                        if (t != null)
+                            break;
+                    }
+                }
                 if (t != null)
                 {
                     if (!clrTypeMapping.TryGetValue(t, out res))
@@ -1081,6 +1121,8 @@ namespace ILRuntime.Runtime.Enviorment
 
         internal IType GetType(object token, IType contextType, IMethod contextMethod)
         {
+            if (token is RequiredModifierType rmt)
+                token = rmt.ElementType;
             int hash = token.GetHashCode();
             IType res;
             if (mapTypeToken.TryGetValue(hash, out res))
@@ -1107,9 +1149,9 @@ namespace ILRuntime.Runtime.Enviorment
                     {
                         t = contextType.FindGenericArgument(_ref.Name);
                     }
-                    if (t == null && contextMethod != null && contextMethod is ILMethod)
+                    if ((t == null || t is ILGenericParameterType) && contextMethod != null && contextMethod is ILMethod)
                     {
-                        t = ((ILMethod)contextMethod).FindGenericArgument(_ref.Name);
+                        t = ((ILMethod)contextMethod).FindGenericArgument(_ref.Name, false);
                     }
                     if (t != null)
                     {
@@ -1146,6 +1188,12 @@ namespace ILRuntime.Runtime.Enviorment
                 {
                     ArrayType at = (ArrayType)_ref;
                     var t = GetType(at.ElementType, contextType, contextMethod);
+                    bool isInvalidToken = false;
+                    if (t == null && at.ElementType.IsGenericParameter)
+                    {
+                        t = new ILGenericParameterType(at.ElementType);
+                        isInvalidToken = true;
+                    }
                     if (t != null)
                     {
                         res = t.MakeArrayType(at.Rank);
@@ -1158,10 +1206,13 @@ namespace ILRuntime.Runtime.Enviorment
                             }
                             mapTypeToken[hash] = res;
                         }
-                        mapTypeToken[res.GetHashCode()] = res;
+                        if (!isInvalidToken)
+                        {
+                            mapTypeToken[res.GetHashCode()] = res;
 
-                        if (!string.IsNullOrEmpty(res.FullName))
-                            mapType[res.FullName] = res;
+                            if (!string.IsNullOrEmpty(res.FullName))
+                                mapType[res.FullName] = res;
+                        }
                         return res;
                     }
                     return t;
@@ -1182,13 +1233,15 @@ namespace ILRuntime.Runtime.Enviorment
                         {
                             val = contextType.FindGenericArgument(gType.GenericArguments[i].Name);
                             dummyGenericInstance = true;
-                            if (val == null)
+                            if (val == null || val is ILGenericParameterType)
                             {
                                 if (contextMethod != null && contextMethod is ILMethod)
                                 {
-                                    val = ((ILMethod)contextMethod).FindGenericArgument(gType.GenericArguments[i].Name);
+                                    var resGA = ((ILMethod)contextMethod).FindGenericArgument(gType.GenericArguments[i].Name, false);
+                                    if (resGA != null)
+                                        val = resGA;
                                 }
-                                else
+                                else if (val == null)
                                     return null;
                             }
                         }
@@ -1295,7 +1348,18 @@ namespace ILRuntime.Runtime.Enviorment
             if (clrTypeMapping.TryGetValue(t, out res))
                 return res;
             else
-                return GetType(t.AssemblyQualifiedName);
+            {
+                res = GetType(t.AssemblyQualifiedName);
+                if(res == null)
+                {
+                    res = new CLRType(t, this);
+                    clrTypeMapping[t] = res;
+                    mapType[res.FullName] = res;
+                    mapType[t.AssemblyQualifiedName] = res;
+                    mapTypeToken[res.GetHashCode()] = res;
+                }
+                return res;
+            }
         }
 
         /// <summary>
@@ -1544,6 +1608,28 @@ namespace ILRuntime.Runtime.Enviorment
             }
             return false;
         }
+
+        internal void CacheException(Exception ex)
+        {
+            mapException[ex.GetHashCode()] = ex;
+        }
+
+        internal Exception GetException(int token)
+        {
+            if (mapException.TryGetValue(token, out var ex))
+                return ex;
+            return null;
+        }
+
+        internal void CacheMethod(IMethod m)
+        {
+            mapMethod[m.GetHashCode()] = m;
+        }
+
+        internal void CacheType(IType type)
+        {
+            mapTypeToken[type.GetHashCode()] = type;
+        }
         
         
         internal IMethod GetMethod(object token, ILType contextType, ILMethod contextMethod, out bool invalidToken)
@@ -1778,6 +1864,13 @@ namespace ILRuntime.Runtime.Enviorment
                         throw new Exception("Crossbinding Adapter for " + i.FullName + " is already added.");
                 }
             }
+        }
+
+        public void RegisterTypeStaticFieldAccessor(Type type, PatchGetFieldDelegate getter, PatchSetFieldDelegate setter)
+        {
+            CLRType clrType = GetType(type) as CLRType;
+            clrType.GetStaticFieldCallback = getter;
+            clrType.SetStaticFieldCallback = setter;
         }
 
         public unsafe int GetSizeInMemory(out List<TypeSizeInfo> detail)

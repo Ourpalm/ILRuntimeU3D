@@ -45,6 +45,7 @@ using System.Runtime.InteropServices;
 
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
+using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
@@ -58,6 +59,7 @@ using AutoList = ILRuntime.Other.UncheckedList<object>;
 
 namespace ILRuntime.Runtime.Generated
 {
+    [ILRuntimePatchIgnore]
     unsafe class ");
                     sb.AppendLine(clsName);
                     sb.Append(@"    {
@@ -263,6 +265,7 @@ using System.Runtime.InteropServices;
 
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Method;
+using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
@@ -275,6 +278,7 @@ using AutoList = ILRuntime.Other.UncheckedList<object>;
 #endif
 namespace ILRuntime.Runtime.Generated
 {
+    [ILRuntimePatchIgnore]
     unsafe class ");
                     sb.AppendLine(clsName);
                     sb.Append(@"    {
@@ -725,29 +729,15 @@ namespace ILRuntime.Runtime.Generated
                         sb.AppendLine();
                     }
 
-                    sb.Append("            app.DelegateManager.RegisterDelegateConvertor<");
-                    sb.Append(realClsName);
-                    sb.AppendLine(">((act) =>");
-                    sb.AppendLine("            {");
-                    sb.Append("                return new ");
-                    sb.Append(realClsName);
-                    sb.Append("((");
-                    first = true;
-                    foreach (var j in miParameters)
+                    if (!realClsName.StartsWith("System.Action<", StringComparison.Ordinal) && !realClsName.StartsWith("System.Func<", StringComparison.Ordinal))
                     {
-                        if (first)
-                        {
-                            first = false;
-                        }
-                        else
-                            sb.Append(", ");
-                        sb.Append(j.Name);
-                    }
-                    sb.AppendLine(") =>");
-                    sb.AppendLine("                {");
-                    if (mi.ReturnType != typeof(void))
-                    {
-                        sb.Append("                    return ((Func<");
+                        sb.Append("            app.DelegateManager.RegisterDelegateConvertor<");
+                        sb.Append(realClsName);
+                        sb.AppendLine(">((act) =>");
+                        sb.AppendLine("            {");
+                        sb.Append("                return new ");
+                        sb.Append(realClsName);
+                        sb.Append("((");
                         first = true;
                         foreach (var j in miParameters)
                         {
@@ -757,52 +747,69 @@ namespace ILRuntime.Runtime.Generated
                             }
                             else
                                 sb.Append(", ");
-                            j.ParameterType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
-                            sb.Append(paramRealClsName);
+                            sb.Append(j.Name);
                         }
-                        if (!first)
-                            sb.Append(", ");
-                        mi.ReturnType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
-                        sb.Append(paramRealClsName);
-                        sb.Append(">)act)(");
-                    }
-                    else
-                    {
-                        if (miParameters.Length != 0)
-                            sb.Append("                    ((Action<");
-                        else
-                            sb.Append("                    ((Action");
-                        first = true;
-                        foreach (var j in miParameters)
+                        sb.AppendLine(") =>");
+                        sb.AppendLine("                {");
+                        if (mi.ReturnType != typeof(void))
                         {
-                            if (first)
+                            sb.Append("                    return ((Func<");
+                            first = true;
+                            foreach (var j in miParameters)
                             {
-                                first = false;
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                    sb.Append(", ");
+                                j.ParameterType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
+                                sb.Append(paramRealClsName);
                             }
-                            else
+                            if (!first)
                                 sb.Append(", ");
-                            j.ParameterType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
+                            mi.ReturnType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
                             sb.Append(paramRealClsName);
-                        }
-                        if (miParameters.Length != 0)
                             sb.Append(">)act)(");
-                        else
-                            sb.Append(")act)(");
-                    }
-                    first = true;
-                    foreach (var j in miParameters)
-                    {
-                        if (first)
-                        {
-                            first = false;
                         }
                         else
-                            sb.Append(", ");
-                        sb.Append(j.Name);
+                        {
+                            if (miParameters.Length != 0)
+                                sb.Append("                    ((Action<");
+                            else
+                                sb.Append("                    ((Action");
+                            first = true;
+                            foreach (var j in miParameters)
+                            {
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                    sb.Append(", ");
+                                j.ParameterType.GetClassName(out paramClsName, out paramRealClsName, out paramIsByRef);
+                                sb.Append(paramRealClsName);
+                            }
+                            if (miParameters.Length != 0)
+                                sb.Append(">)act)(");
+                            else
+                                sb.Append(")act)(");
+                        }
+                        first = true;
+                        foreach (var j in miParameters)
+                        {
+                            if (first)
+                            {
+                                first = false;
+                            }
+                            else
+                                sb.Append(", ");
+                            sb.Append(j.Name);
+                        }
+                        sb.AppendLine(");");
+                        sb.AppendLine("                });");
+                        sb.AppendLine("            });");
                     }
-                    sb.AppendLine(");");
-                    sb.AppendLine("                });");
-                    sb.AppendLine("            });");
 
                     sb.AppendLine("        }");
                     sb.AppendLine("    }");

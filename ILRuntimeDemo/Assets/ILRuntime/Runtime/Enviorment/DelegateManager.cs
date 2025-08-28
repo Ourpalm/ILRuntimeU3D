@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -253,6 +253,8 @@ namespace ILRuntime.Runtime.Enviorment
                 if (ilMethod.DelegateAdapter == null)
                 {
                     var invokeMethod = type.GetMethod("Invoke", ilMethod.ParameterCount);
+                    if (invokeMethod == null && ilMethod.IsStatic)
+                        invokeMethod = type.GetMethod("Invoke", ilMethod.ParameterCount - 1);
                     ilMethod.DelegateAdapter = appdomain.DelegateManager.FindDelegateAdapter(null, ilMethod, invokeMethod);
                 }
                 dele = ilMethod.DelegateAdapter;

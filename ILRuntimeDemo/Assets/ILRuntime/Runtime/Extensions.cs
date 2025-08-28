@@ -2,29 +2,66 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Hybrid;
+using ILRuntime.Mono.Cecil;
 using ILRuntime.Runtime.Stack;
 
 namespace ILRuntime.Runtime
 {
     public static class Extensions
     {
-        public static bool GetJITFlags(this Mono.Cecil.CustomAttribute attribute, Enviorment.AppDomain appdomain, out int flags)
+        public static TypeReference ToTypeReference(this IType type, ModuleDefinition mr)
         {
-            var at = appdomain.GetType(attribute.AttributeType, null, null);
-            flags = ILRuntimeJITFlags.None;
-            if (at == appdomain.JITAttributeType)
+            if (type is ILType ilType)
             {
-                if (attribute.HasConstructorArguments)
+                return ilType.TypeReference;
+            }
+            else if (type is CLRType clrType)
+            {
+                if (type.IsGenericInstance)
                 {
-                    flags = (int)attribute.ConstructorArguments[0].Value;
+                    var gd = mr.ImportReference(clrType.TypeForCLR.GetGenericTypeDefinition());
+
+                    TypeReference[] ga = new TypeReference[type.GenericArguments.Length];
+                    for (int i = 0; i < type.GenericArguments.Length; i++)
+                    {
+                        ga[i] = type.GenericArguments[i].Value.ToTypeReference(mr);
+                    }
+                    return gd.MakeGenericInstanceType(ga);
                 }
-                else
-                    flags = ILRuntimeJITFlags.JITOnDemand;
-                return true;
+                return mr.ImportReference(clrType.TypeForCLR);
             }
             else
+            {
+                ILGenericParameterType gpt = (ILGenericParameterType)type;
+                return gpt.TypeReference;
+            }
+        }
+        public static bool GetJITFlags(this Mono.Cecil.CustomAttribute attribute, Enviorment.AppDomain appdomain, out int flags)
+        {
+            flags = ILRuntimeJITFlags.None;
+
+            if (attribute.AttributeType.Name == appdomain.JITAttributeType.Name)
+            {
+                var at = appdomain.GetType(attribute.AttributeType, null, null);
+                if (at == appdomain.JITAttributeType)
+                {
+                    if (attribute.HasConstructorArguments)
+                    {
+                        flags = (int)attribute.ConstructorArguments[0].Value;
+                    }
+                    else
+                        flags = ILRuntimeJITFlags.JITOnDemand;
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+            {
                 return false;
+            }
         }
         public static void GetClassName(this Type type, out string clsName, out string realClsName, out bool isByRef, bool simpleClassName = false)
         {
