@@ -2051,6 +2051,14 @@ namespace ILRuntime.Runtime.Intepreter
                                                         ilm = ((ILTypeInstance)obj).Type.GetVirtualMethod(ilm) as ILMethod;
                                                     }
                                                 }
+
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+                                                var oldStepType = CurrentStepType;
+                                                if (ilm.IsDebuggerStepThrough)
+                                                {
+                                                    CurrentStepType = StepTypes.Over;
+                                                }
+#endif
                                                 if (ilm.ShouldUseRegisterVM)
                                                 {
                                                     PrepareRegisterCallStack(esp, mStack, ilm);
@@ -2059,6 +2067,10 @@ namespace ILRuntime.Runtime.Intepreter
                                                 else
                                                     esp = Execute(ilm, esp, out unhandledException);
                                                 ValueTypeBasePointer = bp;
+
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+                                                CurrentStepType = oldStepType;
+#endif
                                                 if (unhandledException)
                                                     returned = true;
                                             }
@@ -5045,6 +5057,14 @@ namespace ILRuntime.Runtime.Intepreter
             var type = InvocationContext.GetInvocationType<T>();
             switch (type)
             {
+                case InvocationTypes.Integer:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromInteger(esp->Value);
+                case InvocationTypes.Long:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromLong(*(long*)&esp->Value);
+                case InvocationTypes.Float:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromFloat(*(float*)&esp->Value);
+                case InvocationTypes.Double:
+                    return PrimitiveConverter<T>.CheckAndInvokeFromDouble(*(double*)&esp->Value);
                 case InvocationTypes.ValueType:
                     return InvocationContext.ReadValueTypeSub<T>(esp, domain, this, (AutoList)mStack);
                 case InvocationTypes.Object:
@@ -5545,6 +5565,10 @@ namespace ILRuntime.Runtime.Intepreter
             {
                 ((ILTypeInstance)obj).PushToStack(idx, dst, this, mStack);
             }
+            else if (obj is CrossBindingAdaptorType)
+            {
+                ((CrossBindingAdaptorType)obj).ILInstance.PushToStack(idx, dst, this, mStack);
+            }
             else
             {
                 CLRType t = AppDomain.GetType(obj.GetType()) as CLRType;
@@ -6017,7 +6041,25 @@ namespace ILRuntime.Runtime.Intepreter
         {
             var type = InvocationContext.GetInvocationType<T>();
             switch(type)
-            {   
+            {
+                case InvocationTypes.Integer:
+                    esp->ObjectType = ObjectTypes.Integer;
+                    esp->Value = PrimitiveConverter<T>.CheckAndInvokeToInteger(obj);
+                    return esp + 1;
+                case InvocationTypes.Long:
+                    esp->ObjectType = ObjectTypes.Long;
+                    *(long*)&esp->Value = PrimitiveConverter<T>.CheckAndInvokeToLong(obj);
+                    return esp + 1;
+                case InvocationTypes.Float:
+                    esp->ObjectType = ObjectTypes.Float;
+                    *(float*)&esp->Value = PrimitiveConverter<T>.CheckAndInvokeToFloat(obj);
+                    return esp + 1;
+                case InvocationTypes.Double:
+                    esp->ObjectType = ObjectTypes.Double;
+                    *(double*)&esp->Value = PrimitiveConverter<T>.CheckAndInvokeToDouble(obj);
+                    return esp + 1;
+                case InvocationTypes.Enum:
+                    return PushObject(esp, (AutoList)mStack, obj, false);
                 case InvocationTypes.ValueType:
                     return InvocationContext.PushValueTypeSub(ref obj, esp, domain, this, (AutoList)mStack, false);
                 case InvocationTypes.Object:
